@@ -1,11 +1,6 @@
 <script>
     import Logo from "$lib/components/Logo.svelte";
-    import LinkButton from "$lib/components/LinkButton.svelte";
     import { onMount } from "svelte";
-    import Income from "$lib/components/Income.svelte";
-    import Expense from "$lib/components/Expense.svelte";
-    import Balance from "$lib/components/Balance.svelte";
-    
     export let form, data;
 
     onMount(() => {
@@ -19,35 +14,7 @@
     <Logo />
 </div>
 <div id="mainstuff">
-    <balance>
-        <Balance balance={data.currentBalance}/>
-    </balance>
-    <link-boxes id="links">
-        <link-box id="search">
-            <LinkButton text="Search" link="/search" />
-        </link-box>
-        <link-box id="graphs">
-            <LinkButton link="/graphs" text="Graphs" />
-        </link-box>
-    </link-boxes>
-    <boxes>
-        <labeled-box id="income">
-            <box-label>Incomes</box-label>
-            <box-content>
-                {#each data.recentIncome as income}
-                    <Income {income} />
-                {/each}
-            </box-content>
-        </labeled-box>
-        <labeled-box id="expense">
-            <box-label>Expenses</box-label>
-            <box-content>
-                {#each data.recentExpense as expense}
-                    <Expense {expense} />
-                {/each}
-            </box-content>
-        </labeled-box>
-    </boxes>
+    <h1>Balance Over Time - Line</h1>
 </div>
 
 <style>
@@ -82,7 +49,7 @@
         position: relative;
         top: 4px;
 
-        font-size: 50px;
+        font-size: 30px;
         text-shadow:
         -1px -1px 0 #000,
         1px -1px 0 #000,
@@ -105,7 +72,7 @@
         margin: 20px;
     }
     #income {
-        background-color: rgb(100, 200, 100);
+        background-color: green;
         /* display: flex; */
         /* width: 45%; */
         margin: 20px;
@@ -116,7 +83,7 @@
         grid-row: 1 / 3;
     }
     #expense {
-        background-color: rgb(200, 200, 100);
+        background-color: yellow;
         /* display: flex; */
         /* width: 45%; */
         margin: 20px;
@@ -160,21 +127,19 @@
 
     box-label {
         display: block;
-        width: 100%-12px;
-        /* text-align: center; */
+        width: 100%;
+        text-align: center;
         font-weight: bold;
         font-size: 30px;
 
         background-color: #00000022;
-        padding-left: 12px;
         padding-top: 12px;
         padding-bottom: 12px;
     }
 
     box-content {
         padding: 12px;
-        /* padding: 0px; */
-        /* padding-left: 12px; */
+        padding: 0px;
     }
     boxes {
         display: grid;

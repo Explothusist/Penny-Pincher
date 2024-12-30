@@ -1,11 +1,11 @@
 <!-- TODO: Replace with svg or something -->
 
-<!-- <a href="/thermopylae"> -->
+<a href="/">
     <logo-container>
         <img src="/logo.png">
         <h1>Penny Pincher</h1>
     </logo-container>
-<!-- </a> -->
+</a>
 
 <style>
     img {
