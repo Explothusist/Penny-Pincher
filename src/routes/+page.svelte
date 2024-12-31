@@ -5,8 +5,13 @@
     import Income from "$lib/components/Income.svelte";
     import Expense from "$lib/components/Expense.svelte";
     import Balance from "$lib/components/Balance.svelte";
+    import IncomeTitleBar from "$lib/components/IncomeTitleBar.svelte";
+    import ExpenseTitleBar from "$lib/components/ExpenseTitleBar.svelte";
     
     export let form, data;
+    
+    data.recentIncome.sort((a, b) => b.date-a.date);
+    data.recentExpense.sort((a, b) => b.date-a.date);
 
     onMount(() => {
         if(data.message){
@@ -32,19 +37,23 @@
     </link-boxes>
     <boxes>
         <labeled-box id="income">
-            <box-label>Incomes</box-label>
+            <box-label><IncomeTitleBar /></box-label>
             <box-content>
-                {#each data.recentIncome as income}
-                    <Income {income} />
-                {/each}
+                <div class="scroll">
+                    {#each data.recentIncome as income}
+                        <Income {income} />
+                    {/each}
+                </div>
             </box-content>
         </labeled-box>
         <labeled-box id="expense">
-            <box-label>Expenses</box-label>
+            <box-label><ExpenseTitleBar /></box-label>
             <box-content>
-                {#each data.recentExpense as expense}
-                    <Expense {expense} />
-                {/each}
+                <div class="scroll">
+                    {#each data.recentExpense as expense}
+                        <Expense {expense} />
+                    {/each}
+                </div>
             </box-content>
         </labeled-box>
     </boxes>
@@ -126,6 +135,13 @@
         grid-column: 2;
         grid-row: 1 / 3;
     }
+
+    .scroll {
+        height: 250px;
+        overflow-y:scroll;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
     
     #search {
         /* background-color: green; */
@@ -160,10 +176,10 @@
 
     box-label {
         display: block;
-        width: 100%-12px;
+        width: auto;
         /* text-align: center; */
         font-weight: bold;
-        font-size: 30px;
+        font-size: 20px;
 
         background-color: #00000022;
         padding-left: 12px;
@@ -172,9 +188,11 @@
     }
 
     box-content {
-        padding: 12px;
+        /* padding: 12px; */
         /* padding: 0px; */
         /* padding-left: 12px; */
+
+        /* padding-bottom: 0px; */
     }
     boxes {
         display: grid;

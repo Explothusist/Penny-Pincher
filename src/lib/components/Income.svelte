@@ -1,6 +1,6 @@
 <script lang="ts">
-    import IconPerson from "virtual:icons/mdi/person";
-    import IconShop from "virtual:icons/mdi/shop";
+    import IconEdit from "virtual:icons/mdi/pencil-box-outline";
+    import IconDelete from "virtual:icons/mdi/trash-can-outline";
     import { commatizeNumber } from "$lib/util";
 
     export let income;
@@ -13,6 +13,12 @@
     <sep>―</sep>
     <txt>Income of</txt>
     <dollars>${commatizeNumber(income.amountUsd)}</dollars>
+    <icon>
+        <IconEdit />
+    </icon>
+    <icon>
+        <IconDelete />
+    </icon>
 </income>
 
 <style>
@@ -25,6 +31,25 @@
 
     income:hover {
         background-color: #ffffff20;
+    }
+    
+    icon {
+        position: relative;
+        top: 4px;
+
+        display: inline-flex;
+        gap: 2px;
+        align-items: center;
+
+        font-weight: bold;
+        /* font-size: 20px; */
+
+        background-color: #00000000;
+        transition: background-color 200ms;
+        padding: 3px;
+    }
+    icon:hover {
+        background-color: #00000020;
     }
 
     time {
