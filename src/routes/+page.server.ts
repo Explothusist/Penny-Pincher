@@ -11,12 +11,25 @@ export function load(  { cookies, url }) {
 
 
     const currentBalance = Balance.most_recent().toJSON();
-    const recentIncome = Income.recent(25).map(x => x.toJSON()).reverse();
-    const recentExpense = Expense.recent(25).map(x => x.toJSON()).reverse();
+    const recentIncome = Income.recent(25).map(x => x.toJSON());
+    const recentExpense = Expense.recent(25).map(x => x.toJSON());
 
     return {
         currentBalance: currentBalance,
         recentIncome: recentIncome,
         recentExpense: recentExpense
     };
-}
+};
+
+export const actions = {
+
+    deleteIncome: async ({ cookies, request, url }) =>{
+
+		const hack = url.pathname;
+        const data = await request.formData();
+		const id = data.get("id") as String;
+
+		db.prepare("DELETE FROM income WHERE id = ?").run(Number(id));
+    }
+
+};

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Logo from "$lib/components/Logo.svelte";
     import LinkButton from "$lib/components/LinkButton.svelte";
     import { onMount } from "svelte";
@@ -9,15 +9,35 @@
     import ExpenseTitleBar from "$lib/components/ExpenseTitleBar.svelte";
     
     export let form, data;
+
+    function getIncomeWithID(id: number) {
+        return data.recentIncome.map((income) => income.id).indexOf(id);
+    };
+    
+    let deleteIncomeModalBind: HTMLElement;
+    let deleteIncomeModalHidden = true;
+    let deleteIncomeID = 1;
+    
+    function deleteIncomeClickDismiss(event: PointerEvent) {
+        if (event.target !== deleteIncomeModalBind) return;
+        deleteIncomeModalHidden = true;
+    };
+    function deleteIncomeClickRaise(income_id: number) {
+        deleteIncomeModalHidden = false;
+        deleteIncomeID = income_id;
+        console.log("Peanuts! "+income_id);
+    };
     
     data.recentIncome.sort((a, b) => b.date-a.date);
     data.recentExpense.sort((a, b) => b.date-a.date);
 
     onMount(() => {
+        document.body.appendChild(deleteIncomeModalBind);
         if(data.message){
             alert(data.message);
         }
-    })                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
+        deleteIncomeModalHidden = true;
+    });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
 <div id="topbar">
@@ -41,7 +61,7 @@
             <box-content>
                 <div class="scroll">
                     {#each data.recentIncome as income}
-                        <Income {income} />
+                        <Income {income} onClickDelete={deleteIncomeClickRaise}/>
                     {/each}
                 </div>
             </box-content>
@@ -58,6 +78,31 @@
         </labeled-box>
     </boxes>
 </div>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={deleteIncomeModalBind} class:hidden={deleteIncomeModalHidden} on:click={deleteIncomeClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Confirm Delete Income</modal-label>
+        <form id="deleteIncome" action="?/deleteIncome" method="POST">
+            <content>
+                <input form="deleteIncome" name="id" type="number" value={deleteIncomeID} hidden>
+                <h3>Are you sure you want to delete this Income?</h3>
+                <Income income={data.recentIncome[getIncomeWithID(deleteIncomeID)]} show_edit_delete={false}/>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => deleteIncomeModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
+
 
 <style>
     #topbar {
@@ -212,5 +257,85 @@
         width: 100%;
         flex-grow: 1;
         margin-bottom: 12px;
+    }
+    
+    
+    modal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        background-color: #000000AA;
+        width: 100%;
+        height: 100%;
+        font-family: helvetica;
+        opacity: 1;
+        transition: opacity 500ms;
+    }
+    modal.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .confirm_modal {
+        width: 35%;
+        height: 42%;
+    }
+
+    editor {
+        background-color: white;
+        width: 40%;
+        height: 80%;
+        border-radius: 16px;
+    }
+
+    modal-label {
+        display: block;
+        background-color: var(--accent-1);
+        color: white;
+        text-align: center;
+        padding: 12px;
+        font-weight: bold;
+    }
+
+    modal-label.error {
+
+    }
+
+    content {
+        display: block;
+        margin: 12px;
+    }
+    
+    input, textarea, select {
+        font-size: 16px;
+    }
+    
+    big-button, .big-button {
+        appearance: auto;
+        user-select: none;
+        text-align: center;
+        box-sizing: border-box;
+        white-space: pre;
+        padding-block: 1px;
+        padding-inline: 6px;
+        border-width: 2px;
+        border-style: outset;
+        border-color: buttonborder;
+        border-image: initial;
+
+        background-color: var(--accent-1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 12px;
+        margin: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        width: 95%;
     }
 </style>
