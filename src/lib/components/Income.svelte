@@ -4,9 +4,8 @@
     import { commatizeNumber } from "$lib/util";
 
     export let income;
-    export let onClickDelete = function(income_id: number) {
-
-    };
+    export let onClickDelete = function(income_id: number) {};
+    export let onClickEdit = function(income_id: number) {};
     export let show_edit_delete = true;
 </script>
 
@@ -18,7 +17,7 @@
     <txt>Income of</txt>
     <dollars>${commatizeNumber(income.amountUsd)}</dollars>
     {#if show_edit_delete}
-        <icon>
+        <icon on:click={() => onClickEdit(income.id)}>
             <IconEdit />
         </icon>
         <icon on:click={() => onClickDelete(income.id)}>

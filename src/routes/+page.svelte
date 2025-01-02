@@ -10,33 +10,92 @@
     
     export let form, data;
 
-    function getIncomeWithID(id: number) {
+    function getIncomeByID(id: number) {
         return data.recentIncome.map((income) => income.id).indexOf(id);
     };
+    function getExpenseByID(id: number) {
+        return data.recentExpense.map((income) => income.id).indexOf(id);
+    };
     
+    let addIncomeModalBind: HTMLElement;
+    let addIncomeModalHidden = true;
+    let editIncomeModalBind: HTMLElement;
+    let editIncomeModalHidden = true;
+    let editIncomeID = 1;
     let deleteIncomeModalBind: HTMLElement;
     let deleteIncomeModalHidden = true;
     let deleteIncomeID = 1;
     
-    function deleteIncomeClickDismiss(event: PointerEvent) {
-        if (event.target !== deleteIncomeModalBind) return;
-        deleteIncomeModalHidden = true;
+    let addExpenseModalBind: HTMLElement;
+    let addExpenseModalHidden = true;
+    let editExpenseModalBind: HTMLElement;
+    let editExpenseModalHidden = true;
+    let editExpenseID = 1;
+    let deleteExpenseModalBind: HTMLElement;
+    let deleteExpenseModalHidden = true;
+    let deleteExpenseID = 1;
+    
+    function addIncomeClickRaise() {
+        addIncomeModalHidden = false;
+    };
+    function addIncomeClickDismiss(event: PointerEvent) {
+        if (event.target !== addIncomeModalBind) return;
+        addIncomeModalHidden = true;
+    };
+    function editIncomeClickRaise(income_id: number) {
+        editIncomeModalHidden = false;
+        editIncomeID = income_id;
+    };
+    function editIncomeClickDismiss(event: PointerEvent) {
+        if (event.target !== editIncomeModalBind) return;
+        editIncomeModalHidden = true;
     };
     function deleteIncomeClickRaise(income_id: number) {
         deleteIncomeModalHidden = false;
         deleteIncomeID = income_id;
-        console.log("Peanuts! "+income_id);
+    };
+    function deleteIncomeClickDismiss(event: PointerEvent) {
+        if (event.target !== deleteIncomeModalBind) return;
+        deleteIncomeModalHidden = true;
+    };
+    
+    function addExpenseClickRaise() {
+        addExpenseModalHidden = false;
+    };
+    function addExpenseClickDismiss(event: PointerEvent) {
+        if (event.target !== addExpenseModalBind) return;
+        addExpenseModalHidden = true;
+    };
+    function editExpenseClickRaise(expense_id: number) {
+        editExpenseModalHidden = false;
+        editExpenseID = expense_id;
+    };
+    function editExpenseClickDismiss(event: PointerEvent) {
+        if (event.target !== editExpenseModalBind) return;
+        editExpenseModalHidden = true;
+    };
+    function deleteExpenseClickRaise(expense_id: number) {
+        deleteExpenseModalHidden = false;
+        deleteExpenseID = expense_id;
+    };
+    function deleteExpenseClickDismiss(event: PointerEvent) {
+        if (event.target !== deleteExpenseModalBind) return;
+        deleteExpenseModalHidden = true;
     };
     
     data.recentIncome.sort((a, b) => b.date-a.date);
     data.recentExpense.sort((a, b) => b.date-a.date);
 
     onMount(() => {
+        document.body.appendChild(addIncomeModalBind);
+        document.body.appendChild(editIncomeModalBind);
         document.body.appendChild(deleteIncomeModalBind);
+        document.body.appendChild(addExpenseModalBind);
+        document.body.appendChild(editExpenseModalBind);
+        document.body.appendChild(deleteExpenseModalBind);
         if(data.message){
             alert(data.message);
         }
-        deleteIncomeModalHidden = true;
     });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
@@ -57,27 +116,89 @@
     </link-boxes>
     <boxes>
         <labeled-box id="income">
-            <box-label><IncomeTitleBar /></box-label>
+            <box-label><IncomeTitleBar onClickAdd={addIncomeClickRaise}/></box-label>
             <box-content>
                 <div class="scroll">
                     {#each data.recentIncome as income}
-                        <Income {income} onClickDelete={deleteIncomeClickRaise}/>
+                        <Income {income} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
                     {/each}
                 </div>
             </box-content>
         </labeled-box>
         <labeled-box id="expense">
-            <box-label><ExpenseTitleBar /></box-label>
+            <box-label><ExpenseTitleBar onClickAdd={addExpenseClickRaise}/></box-label>
             <box-content>
                 <div class="scroll">
                     {#each data.recentExpense as expense}
-                        <Expense {expense} />
+                        <Expense {expense} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
                     {/each}
                 </div>
             </box-content>
         </labeled-box>
     </boxes>
 </div>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={addIncomeModalBind} class:hidden={addIncomeModalHidden} on:click={addIncomeClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Add Income</modal-label>
+        <form id="addIncome" action="?/addIncome" method="POST">
+            <content>
+                <block-cont>
+                    <faint>Amount:</faint>
+                    <input form="addIncome" name="amount" type="number" placeholder="Amount" >
+                </block-cont>
+                <block-cont>
+                    <faint>Date:</faint>
+                    <input form="addIncome" name="date" type="date" value={new Date(Date.now()).toISOString().slice(0, 10)} >
+                </block-cont>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => addIncomeModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={editIncomeModalBind} class:hidden={editIncomeModalHidden} on:click={editIncomeClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Edit Income</modal-label>
+        <form id="editIncome" action="?/editIncome" method="POST">
+            <content>
+                <input form="editIncome" name="id" type="number" value={editIncomeID} hidden>
+                <!-- <h3>Are you sure you want to edit this Income?</h3> -->
+                <Income income={data.recentIncome[getIncomeByID(editIncomeID)]} show_edit_delete={false}/>
+
+                <block-cont>
+                    <faint>Amount:</faint>
+                    <input form="editIncome" name="amount" type="number" value={data.recentIncome[getIncomeByID(editIncomeID)].amountUsd} >
+                </block-cont>
+                <block-cont>
+                    <faint>Date:</faint>
+                    <input form="editIncome" name="date" type="date" value={new Date(data.recentIncome[getIncomeByID(editIncomeID)].date * 1000).toISOString().slice(0, 10)} >
+                </block-cont>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => editIncomeModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -88,12 +209,98 @@
             <content>
                 <input form="deleteIncome" name="id" type="number" value={deleteIncomeID} hidden>
                 <h3>Are you sure you want to delete this Income?</h3>
-                <Income income={data.recentIncome[getIncomeWithID(deleteIncomeID)]} show_edit_delete={false}/>
+                <Income income={data.recentIncome[getIncomeByID(deleteIncomeID)]} show_edit_delete={false}/>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <input type="submit" class="big-button" value="Confirm">
             <big-button on:click={() => deleteIncomeModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={addExpenseModalBind} class:hidden={addExpenseModalHidden} on:click={addExpenseClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Add Expense</modal-label>
+        <form id="addExpense" action="?/addExpense" method="POST">
+            <content>
+                <block-cont>
+                    <faint>Amount:</faint>
+                    <input form="addExpense" name="amount" type="number" placeholder="Amount" >
+                </block-cont>
+                <block-cont>
+                    <faint>Date:</faint>
+                    <input form="addExpense" name="date" type="date" value={new Date(Date.now()).toISOString().slice(0, 10)} >
+                </block-cont>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => addExpenseModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={editExpenseModalBind} class:hidden={editExpenseModalHidden} on:click={editExpenseClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Edit Expense</modal-label>
+        <form id="editExpense" action="?/editExpense" method="POST">
+            <content>
+                <input form="editExpense" name="id" type="number" value={editExpenseID} hidden>
+                <!-- <h3>Are you sure you want to edit this Expense?</h3> -->
+                <Expense expense={data.recentExpense[getExpenseByID(editExpenseID)]} show_edit_delete={false}/>
+
+                <block-cont>
+                    <faint>Amount:</faint>
+                    <input form="editExpense" name="amount" type="number" value={data.recentExpense[getExpenseByID(editExpenseID)].amountUsd} >
+                </block-cont>
+                <block-cont>
+                    <faint>Date:</faint>
+                    <input form="editExpense" name="date" type="date" value={new Date(data.recentExpense[getExpenseByID(editExpenseID)].date * 1000).toISOString().slice(0, 10)} >
+                </block-cont>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => editExpenseModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={deleteExpenseModalBind} class:hidden={deleteExpenseModalHidden} on:click={deleteExpenseClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Confirm Delete Expense</modal-label>
+        <form id="deleteExpense" action="?/deleteExpense" method="POST">
+            <content>
+                <input form="deleteExpense" name="id" type="number" value={deleteExpenseID} hidden>
+                <h3>Are you sure you want to delete this Expense?</h3>
+                <Expense expense={data.recentExpense[getExpenseByID(deleteExpenseID)]} show_edit_delete={false}/>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => deleteExpenseModalHidden=true}>Cancel</big-button>
             <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
             <!-- <p id="error"> -->
                 <!-- {form?.message} -->
@@ -337,5 +544,14 @@
         color: white;
         font-weight: bold;
         width: 95%;
+    }
+    
+    block-cont {
+        display: block;
+    }
+
+    faint {
+        opacity: 0.7;
+        font-size: 16px;
     }
 </style>

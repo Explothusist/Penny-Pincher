@@ -3,6 +3,8 @@
     import IconEdit from "virtual:icons/mdi/pencil-box-outline";
     import IconDelete from "virtual:icons/mdi/trash-can-outline";
     import { commatizeNumber } from "$lib/util";
+
+    export let onClickAdd;
 </script>
 
 
@@ -11,7 +13,7 @@
         <txt>Incomes</txt>
     </half>
     <half class="right">
-        <icon>
+        <icon on:click={() => onClickAdd()}>
             <IconPlus />
         </icon>
     </half>
