@@ -1,3 +1,4 @@
+import type ShowMoreButton from '$lib/components/ShowMoreButton.svelte';
 import { Income, Expense, Balance } from '$lib/db.server';
 import Database from 'better-sqlite3';
 const db = new Database("db/main.db", {});
@@ -9,15 +10,19 @@ export function load(  { cookies, url }) {
 	load functions will not run when changing pages unless something referenced in the function, such as url, changes. Maybe could be replaced with invalidateAll()? 
 	It must be url.pathname too, not just url.  */
 
+    const income_to_load = Number(url.searchParams.get("income")) || 50;
+    const expense_to_load = Number(url.searchParams.get("expense")) || 50;
 
     const currentBalance = Balance.most_recent().toJSON();
-    const recentIncome = Income.recent(25).map(x => x.toJSON());
-    const recentExpense = Expense.recent(25).map(x => x.toJSON());
+    const recentIncome = Income.recent(income_to_load).map(x => x.toJSON());
+    const recentExpense = Expense.recent(expense_to_load).map(x => x.toJSON());
 
     return {
         currentBalance: currentBalance,
         recentIncome: recentIncome,
-        recentExpense: recentExpense
+        recentExpense: recentExpense,
+        income_loaded: income_to_load,
+        expense_loaded: expense_to_load
     };
 };
 

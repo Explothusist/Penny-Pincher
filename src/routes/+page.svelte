@@ -7,6 +7,7 @@
     import Balance from "$lib/components/Balance.svelte";
     import IncomeTitleBar from "$lib/components/IncomeTitleBar.svelte";
     import ExpenseTitleBar from "$lib/components/ExpenseTitleBar.svelte";
+    import ShowMoreButton from "$lib/components/ShowMoreButton.svelte";
     
     export let form, data;
 
@@ -122,6 +123,7 @@
                     {#each data.recentIncome as income}
                         <Income {income} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
                     {/each}
+                    <ShowMoreButton link={"/?income="+(data.income_loaded+50)} />
                 </div>
             </box-content>
         </labeled-box>
@@ -132,6 +134,7 @@
                     {#each data.recentExpense as expense}
                         <Expense {expense} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
                     {/each}
+                    <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)} />
                 </div>
             </box-content>
         </labeled-box>
