@@ -1,0 +1,78 @@
+<script lang="ts">
+    import Chart from 'chart.js/auto';
+    import Logo from "$lib/components/Logo.svelte";
+    import { onMount } from "svelte";
+    import type { Income } from '$lib/db.server.js';
+    export let form, data;
+
+    onMount(() => {
+        if(data.message){
+            alert(data.message);
+        }
+        
+        (async function() {
+            const xyValues = data.recentIncome.map((function(income: Income) { return{x: income.date*1000, y: income.amountUsd}; }));
+            console.log(xyValues);
+
+            new Chart(
+                "chart_canvas",
+                {
+                    type: "scatter",
+                    data: {
+                        datasets: [{
+                            pointRadius: 4,
+                            pointBackgroundColor: "rgb(0,0,255)",
+                            data: xyValues
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: "time"
+                            }
+                        }
+                    }
+                }
+            );
+        })();
+    })                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
+</script>
+
+<div id="topbar">
+    <Logo />
+</div>
+<div id="mainstuff">
+    <h1>Recent Income - Dot</h1>
+    <chart-container>
+        <canvas id="chart_canvas"></canvas>
+    </chart-container>
+</div>
+
+<style>
+    #topbar {
+        width: 98%;
+        display: flex;
+        justify-content: left;
+        margin-left: 2%;
+    }
+
+    #mainstuff {
+        /* width: max(80%, min(800px, 90%)); */
+        /* margin-left: 10%; */
+        margin: 5%;
+        width: 90%;
+        
+        /* background-color: white;
+        justify-self: center;
+        justify-content: center;
+        margin-top: 15%;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        border-radius: 20px; */
+    }
+
+    canvas {
+        width: auto;
+        height: auto;
+    }
+</style>

@@ -4,9 +4,14 @@
     import { commatizeNumber } from "$lib/util";
 
     export let income;
+    export let category;
     export let onClickDelete = function(income_id: number) {};
     export let onClickEdit = function(income_id: number) {};
     export let show_edit_delete = true;
+
+    // console.log(income.category);
+    // console.log(category);
+    // console.log(category.name);
 </script>
 
 
@@ -16,6 +21,8 @@
     <sep>―</sep>
     <txt>Income of</txt>
     <dollars>${commatizeNumber(income.amountUsd)}</dollars>
+    <txt>from</txt>
+    <category>{category.name}</category>
     {#if show_edit_delete}
         <icon on:click={() => onClickEdit(income.id)}>
             <IconEdit />
@@ -74,9 +81,9 @@
         user-select: none;
     }
 
-    org, person {
+    category {
         position: relative;
-        top: 4px;
+        /* top: 4px; */
 
         display: inline-flex;
         gap: 2px;

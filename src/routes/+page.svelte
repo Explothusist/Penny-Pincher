@@ -87,6 +87,24 @@
     data.recentIncome.sort((a, b) => b.date-a.date);
     data.recentExpense.sort((a, b) => b.date-a.date);
 
+    let nonzero_categories = data.categories.filter((category) => (category.id !== 0));
+    let category_display = [true, true, true, true, true, true];
+    let toggled_income = data.recentIncome;
+    let toggled_expense = data.recentExpense;
+
+    function get_toggled_income() {
+        toggled_income = data.recentIncome.filter((income) => category_display[income.category]);
+    }
+    function get_toggled_expense() {
+        toggled_expense = data.recentExpense.filter((expense) => category_display[expense.category]);
+    }
+
+    function toggle_category(number: number) {
+        category_display[number] = !category_display[number];
+        get_toggled_expense();
+        get_toggled_income();
+    }
+
     onMount(() => {
         document.body.appendChild(addIncomeModalBind);
         document.body.appendChild(editIncomeModalBind);
@@ -107,21 +125,32 @@
     <balance>
         <Balance balance={data.currentBalance}/>
     </balance>
-    <link-boxes id="links">
+    <link-boxes class="links">
         <link-box id="search">
             <LinkButton text="Search" link="/search" />
         </link-box>
         <link-box id="graphs">
             <LinkButton link="/graphs" text="Graphs" />
         </link-box>
+        <link-box id="categories">
+            <LinkButton link="/categories" text="Categories" />
+        </link-box>
+    </link-boxes>
+    <link-boxes class="links">
+        {#each nonzero_categories as category}
+            <link-box id={"cat_"+category.id}>
+                <input type="checkbox" on:click={() => toggle_category(category.id)} checked >
+                {category.name}
+            </link-box>
+        {/each}
     </link-boxes>
     <boxes>
         <labeled-box id="income">
             <box-label><IncomeTitleBar onClickAdd={addIncomeClickRaise}/></box-label>
             <box-content>
                 <div class="scroll">
-                    {#each data.recentIncome as income}
-                        <Income {income} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
+                    {#each toggled_income as income}
+                        <Income {income} category={data.categories[income.category]} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
                     {/each}
                     <ShowMoreButton link={"/?income="+(data.income_loaded+50)} />
                 </div>
@@ -131,8 +160,8 @@
             <box-label><ExpenseTitleBar onClickAdd={addExpenseClickRaise}/></box-label>
             <box-content>
                 <div class="scroll">
-                    {#each data.recentExpense as expense}
-                        <Expense {expense} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
+                    {#each toggled_expense as expense}
+                        <Expense {expense} category={data.categories[expense.category]} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
                     {/each}
                     <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)} />
                 </div>
@@ -148,6 +177,7 @@
         <modal-label>Add Income</modal-label>
         <form id="addIncome" action="?/addIncome" method="POST">
             <content>
+                <input form="addIncome" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <block-cont>
                     <faint>Amount:</faint>
                     <input form="addIncome" name="amount" type="number" placeholder="Amount" >
@@ -178,8 +208,10 @@
         <form id="editIncome" action="?/editIncome" method="POST">
             <content>
                 <input form="editIncome" name="id" type="number" value={editIncomeID} hidden>
+                <input form="editIncome" name="old_amount" type="number" value={data.recentIncome[getIncomeByID(editIncomeID)].amountUsd} hidden>
+                <input form="editIncome" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <!-- <h3>Are you sure you want to edit this Income?</h3> -->
-                <Income income={data.recentIncome[getIncomeByID(editIncomeID)]} show_edit_delete={false}/>
+                <Income income={data.recentIncome[getIncomeByID(editIncomeID)]} category={data.categories[data.recentIncome[getIncomeByID(editIncomeID)].category]} show_edit_delete={false}/>
 
                 <block-cont>
                     <faint>Amount:</faint>
@@ -211,8 +243,10 @@
         <form id="deleteIncome" action="?/deleteIncome" method="POST">
             <content>
                 <input form="deleteIncome" name="id" type="number" value={deleteIncomeID} hidden>
+                <input form="deleteIncome" name="old_amount" type="number" value={data.recentIncome[getIncomeByID(deleteIncomeID)].amountUsd} hidden>
+                <input form="deleteIncome" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <h3>Are you sure you want to delete this Income?</h3>
-                <Income income={data.recentIncome[getIncomeByID(deleteIncomeID)]} show_edit_delete={false}/>
+                <Income income={data.recentIncome[getIncomeByID(deleteIncomeID)]} category={data.categories[data.recentIncome[getIncomeByID(deleteIncomeID)].category]} show_edit_delete={false}/>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -234,6 +268,7 @@
         <modal-label>Add Expense</modal-label>
         <form id="addExpense" action="?/addExpense" method="POST">
             <content>
+                <input form="addExpense" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <block-cont>
                     <faint>Amount:</faint>
                     <input form="addExpense" name="amount" type="number" placeholder="Amount" >
@@ -264,8 +299,10 @@
         <form id="editExpense" action="?/editExpense" method="POST">
             <content>
                 <input form="editExpense" name="id" type="number" value={editExpenseID} hidden>
+                <input form="editExpense" name="old_amount" type="number" value={data.recentExpense[getExpenseByID(editExpenseID)].amountUsd} hidden>
+                <input form="editExpense" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <!-- <h3>Are you sure you want to edit this Expense?</h3> -->
-                <Expense expense={data.recentExpense[getExpenseByID(editExpenseID)]} show_edit_delete={false}/>
+                <Expense expense={data.recentExpense[getExpenseByID(editExpenseID)]} category={data.categories[data.recentExpense[getExpenseByID(editExpenseID)].category]} show_edit_delete={false}/>
 
                 <block-cont>
                     <faint>Amount:</faint>
@@ -297,8 +334,10 @@
         <form id="deleteExpense" action="?/deleteExpense" method="POST">
             <content>
                 <input form="deleteExpense" name="id" type="number" value={deleteExpenseID} hidden>
+                <input form="deleteExpense" name="old_amount" type="number" value={data.recentExpense[getExpenseByID(deleteExpenseID)].amountUsd} hidden>
+                <input form="deleteExpense" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <h3>Are you sure you want to delete this Expense?</h3>
-                <Expense expense={data.recentExpense[getExpenseByID(deleteExpenseID)]} show_edit_delete={false}/>
+                <Expense expense={data.recentExpense[getExpenseByID(deleteExpenseID)]} category={data.categories[data.recentExpense[getExpenseByID(deleteExpenseID)].category]} show_edit_delete={false}/>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -353,7 +392,7 @@
         -1px 1px 0 #000,
         1px 1px 0 #000;
     }
-    #links {
+    .links {
         background-color: white;
         width: 80%;
         margin-left: 10%;
@@ -412,6 +451,13 @@
         grid-column: 3;
         grid-row: 1;
     }
+    #categories {
+        /* background-color: yellow; */
+        margin: 10px;
+        
+        grid-column: 4;
+        grid-row: 1;
+    }
 
 
     
@@ -460,7 +506,7 @@
     }
     link-boxes {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         gap: 10px;
         /* grid-auto-columns: minmax(100px, auto); */
         grid-auto-rows: minmax(25px, auto);
