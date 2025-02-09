@@ -3,50 +3,38 @@
     import IconDelete from "virtual:icons/mdi/trash-can-outline";
     import { commatizeNumber } from "$lib/util";
 
-    export let income;
     export let category;
-    export let onClickDelete = function(income_id: number) {};
-    export let onClickEdit = function(income_id: number) {};
+    export let onClickDelete = function(category_id: number) {};
+    export let onClickEdit = function(category_id: number) {};
     export let show_edit_delete = true;
-
-    // console.log(income.category);
-    // console.log(category);
-    // console.log(category.name);
 </script>
 
-
 <color style={"background-color: "+category.color+"40;"}>
-    <income>
-        <!-- HACK! -->
-        <time>{new Date(income.date * 1000).toDateString().split(" ").slice(1, 4).join(" ")}</time>
-        <sep>―</sep>
-        <txt>Income of</txt>
-        <dollars>${commatizeNumber(income.amountUsd)}</dollars>
-        <txt>from</txt>
-        <category>{category.name}</category>
+    <category>
+        <title>{category.name}</title>
         {#if show_edit_delete}
-            <icon on:click={() => onClickEdit(income.id)}>
+            <icon on:click={() => onClickEdit(category.id)}>
                 <IconEdit />
             </icon>
-            <icon on:click={() => onClickDelete(income.id)}>
+            <icon on:click={() => onClickDelete(category.id)}>
                 <IconDelete />
             </icon>
         {/if}
-    </income>
+    </category>
 </color>
 
 <style>
+
     color {
         display: block;
     }
-    income {
+    category {
         display: block;
         background-color: #00000010;
         transition: background-color 200ms;
         padding: 12px;
     }
-
-    income:hover {
+    category:hover {
         background-color: #ffffff20;
     }
     
@@ -86,7 +74,7 @@
         user-select: none;
     }
 
-    category {
+    title {
         position: relative;
         /* top: 4px; */
 

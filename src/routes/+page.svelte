@@ -88,7 +88,10 @@
     data.recentExpense.sort((a, b) => b.date-a.date);
 
     let nonzero_categories = data.categories.filter((category) => (category.id !== 0));
-    let category_display = [true, true, true, true, true, true];
+    let category_display = [true];
+    for (let cat of nonzero_categories) {
+        category_display.push(true);
+    }
     let toggled_income = data.recentIncome;
     let toggled_expense = data.recentExpense;
 
@@ -138,9 +141,9 @@
     </link-boxes>
     <link-boxes class="links">
         {#each nonzero_categories as category}
-            <link-box id={"cat_"+category.id}>
-                <input type="checkbox" on:click={() => toggle_category(category.id)} checked >
-                {category.name}
+            <link-box style={"background-color: "+category.color+"40;"}>
+                <input type="checkbox" id={"cat_"+category.id} on:click={() => toggle_category(category.id)} checked >
+                <label for={"cat_"+category.id}>{category.name}</label>
             </link-box>
         {/each}
     </link-boxes>
@@ -186,6 +189,14 @@
                     <faint>Date:</faint>
                     <input form="addIncome" name="date" type="date" value={new Date(Date.now()).toISOString().slice(0, 10)} >
                 </block-cont>
+                <block-cont>
+                    <faint>Category:</faint>
+                    <select form="addIncome" name="category">
+                        {#each nonzero_categories as category}
+                            <option value={category.id}>{category.name}</option>
+                        {/each}
+                    </select>
+                </block-cont>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -220,6 +231,14 @@
                 <block-cont>
                     <faint>Date:</faint>
                     <input form="editIncome" name="date" type="date" value={new Date(data.recentIncome[getIncomeByID(editIncomeID)].date * 1000).toISOString().slice(0, 10)} >
+                </block-cont>
+                <block-cont>
+                    <faint>Category:</faint>
+                    <select form="editIncome" name="category">
+                        {#each nonzero_categories as category}
+                            <option value={category.id}>{category.name}</option>
+                        {/each}
+                    </select>
                 </block-cont>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -277,6 +296,14 @@
                     <faint>Date:</faint>
                     <input form="addExpense" name="date" type="date" value={new Date(Date.now()).toISOString().slice(0, 10)} >
                 </block-cont>
+                <block-cont>
+                    <faint>Category:</faint>
+                    <select form="addExpense" name="category">
+                        {#each nonzero_categories as category}
+                            <option value={category.id}>{category.name}</option>
+                        {/each}
+                    </select>
+                </block-cont>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -311,6 +338,14 @@
                 <block-cont>
                     <faint>Date:</faint>
                     <input form="editExpense" name="date" type="date" value={new Date(data.recentExpense[getExpenseByID(editExpenseID)].date * 1000).toISOString().slice(0, 10)} >
+                </block-cont>
+                <block-cont>
+                    <faint>Category:</faint>
+                    <select form="editExpense" name="category">
+                        {#each nonzero_categories as category}
+                            <option value={category.id}>{category.name}</option>
+                        {/each}
+                    </select>
                 </block-cont>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -408,7 +443,7 @@
         margin: 20px;
     }
     #income {
-        background-color: rgb(100, 200, 100);
+        /* background-color: rgb(100, 200, 100); */
         /* display: flex; */
         /* width: 45%; */
         margin: 20px;
@@ -419,7 +454,7 @@
         grid-row: 1 / 3;
     }
     #expense {
-        background-color: rgb(200, 200, 100);
+        /* background-color: rgb(200, 200, 100); */
         /* display: flex; */
         /* width: 45%; */
         margin: 20px;

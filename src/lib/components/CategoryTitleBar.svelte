@@ -1,0 +1,86 @@
+<script lang="ts">
+    import IconPlus from "virtual:icons/mdi/plus-box-outline";
+    import IconEdit from "virtual:icons/mdi/pencil-box-outline";
+    import IconDelete from "virtual:icons/mdi/trash-can-outline";
+    import { commatizeNumber } from "$lib/util";
+    
+    export let onClickAdd;
+</script>
+
+
+<category>
+    <half>
+        <txt>Categories:</txt>
+    </half>
+    <half class="right">
+        <icon on:click={() => onClickAdd()}>
+            <IconPlus />
+        </icon>
+    </half>
+</category>
+
+<style>
+    category {
+        display: block;
+
+        font-size: 30px;
+        margin-left: 20px;
+        margin-bottom: 20px;
+        width: auto;
+    }
+    half {
+        display: inline-flex;
+    }
+
+    .left {
+        align-items: left;
+        justify-content: left;
+    }
+    .right {
+        margin-left: auto;
+        margin-right: 0;
+        /* width: auto; */
+        text-align: right;
+    }
+
+    time {
+        font-weight: bold;
+        font-size: 0.9em;
+        display: inline-block;
+    }
+
+    sep {
+        user-select: none;
+        display: inline-block;
+        opacity: 0.5;
+        font-weight: bold;
+    }
+
+    txt {
+        user-select: none;
+    }
+
+    icon {
+        position: relative;
+        top: 4px;
+
+        display: inline-flex;
+        gap: 2px;
+        align-items: center;
+
+        font-weight: bold;
+        font-size: 20px;
+
+        background-color: #00000000;
+        transition: background-color 200ms;
+        padding: 4px;
+    }
+    icon:hover {
+        background-color: #00000020;
+    }
+
+    dollars {
+        color: darkgreen;
+        font-weight: bold;
+    }
+</style>

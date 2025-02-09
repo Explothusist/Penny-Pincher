@@ -16,7 +16,7 @@ export function load(  { cookies, url }) {
     const currentBalance = Balance.current().toJSON();
     const recentIncome = Income.recent(income_to_load).map(x => x.toJSON());
     const recentExpense = Expense.recent(expense_to_load).map(x => x.toJSON());
-    let categories = Category.get_all().map(x => x.toJSON());
+    const categories = Category.get_all().map(x => x.toJSON());
 
     return {
         currentBalance: currentBalance,
@@ -36,6 +36,7 @@ export const actions = {
         const data = await request.formData();
 		const id = data.get("id") as String;
 		const amount = data.get("amount") as String;
+		const category = data.get("category") as String;
 		const date = data.get("date") as String;
         const former_balance = data.get("former_balance") as String;
 
@@ -46,7 +47,7 @@ export const actions = {
 
         // console.log(Number(former_balance)+" + "+Number(amount)+" = "+(Number(former_balance)+Number(amount)));
 
-		db.prepare("INSERT INTO income (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, 1);
+		db.prepare("INSERT INTO income (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category));
         db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
     },
 
@@ -57,6 +58,7 @@ export const actions = {
 		const id = data.get("id") as String;
 		const amount = data.get("amount") as String;
 		const date = data.get("date") as String;
+		const category = data.get("category") as String;
         const old_amount = data.get("old_amount") as String;
         const former_balance = data.get("former_balance") as String;
 
@@ -66,7 +68,7 @@ export const actions = {
         const new_balance = Number(former_balance)+Number(amount)-Number(old_amount);
         // console.log(Number(former_balance)+" + "+Number(amount)+" - "+Number(old_amount)+" = "+(Number(former_balance)+Number(amount)-Number(old_amount)));
 
-		db.prepare("UPDATE income SET amount = ?, date = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(id));
+		db.prepare("UPDATE income SET amount = ?, date = ?, source = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category), Number(id));
         db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
     },
 
@@ -92,6 +94,7 @@ export const actions = {
 		const id = data.get("id") as String;
 		const amount = data.get("amount") as String;
 		const date = data.get("date") as String;
+		const category = data.get("category") as String;
         const former_balance = data.get("former_balance") as String;
 
         const formatted_date = new Date(String(date));
@@ -99,7 +102,7 @@ export const actions = {
         
         const new_balance = Number(former_balance)-Number(amount);
 
-		db.prepare("INSERT INTO expense (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, 1);
+		db.prepare("INSERT INTO expense (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category));
         db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
     },
 
@@ -110,6 +113,7 @@ export const actions = {
 		const id = data.get("id") as String;
 		const amount = data.get("amount") as String;
 		const date = data.get("date") as String;
+		const category = data.get("category") as String;
         const old_amount = data.get("old_amount") as String;
         const former_balance = data.get("former_balance") as String;
 
@@ -118,7 +122,7 @@ export const actions = {
         
         const new_balance = Number(former_balance)-Number(amount)+Number(old_amount);
 
-		db.prepare("UPDATE expense SET amount = ?, date = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(id));
+		db.prepare("UPDATE expense SET amount = ?, date = ?, source = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category), Number(id));
         db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
     },
 
