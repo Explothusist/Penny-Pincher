@@ -1,11 +1,13 @@
 <script lang="ts">
     import IconEdit from "virtual:icons/mdi/pencil-box-outline";
     import IconDelete from "virtual:icons/mdi/trash-can-outline";
+    import IconAct from "virtual:icons/mdi/cog-outline";
     import { commatizeNumber } from "$lib/util";
 
     export let category;
     export let onClickDelete = function(category_id: number) {};
     export let onClickEdit = function(category_id: number) {};
+    export let onClickAct = function(category_id: number) {};
     export let show_edit_delete = true;
 </script>
 
@@ -13,6 +15,9 @@
     <category>
         <title>{category.name}</title>
         {#if show_edit_delete}
+            <icon on:click={() => onClickAct(category.id)}>
+                <IconAct />
+            </icon>
             <icon on:click={() => onClickEdit(category.id)}>
                 <IconEdit />
             </icon>

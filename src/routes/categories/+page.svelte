@@ -19,6 +19,9 @@
     let deleteCategoryModalBind: HTMLElement;
     let deleteCategoryModalHidden = true;
     let deleteCategoryID = 1;
+    let actCategoryModalBind: HTMLElement;
+    let actCategoryModalHidden = true;
+    let actCategoryID = 1;
     
     function addCategoryClickRaise() {
         addCategoryModalHidden = false;
@@ -43,6 +46,14 @@
         if (event.target !== deleteCategoryModalBind) return;
         deleteCategoryModalHidden = true;
     };
+    function actCategoryClickRaise(income_id: number) {
+        actCategoryModalHidden = false;
+        actCategoryID = income_id;
+    };
+    function actCategoryClickDismiss(event: PointerEvent) {
+        if (event.target !== actCategoryModalBind) return;
+        actCategoryModalHidden = true;
+    };
 
     let nonzero_categories = data.categories.filter((category) => (category.id !== 0));
 
@@ -50,6 +61,7 @@
         document.body.appendChild(addCategoryModalBind);
         document.body.appendChild(editCategoryModalBind);
         document.body.appendChild(deleteCategoryModalBind);
+        document.body.appendChild(actCategoryModalBind);
         if(data.message){
             alert(data.message);
         }
@@ -122,7 +134,7 @@
                 <block-cont>
                     <faint>Color:</faint>
                     <input type="color" form="editCategory" name="color" value={data.categories[getCategoryByID(editCategoryID)].color} >
-                    <!-- <select form="editCategory" name="category">
+                    <!-- <select form="addCategory" name="category">
                         <option value=1>Red</option>
                         <option value=2>Orange</option>
                         <option value=3>Yellow</option>
@@ -161,6 +173,30 @@
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <input type="submit" class="big-button" value="Confirm">
             <big-button on:click={() => deleteCategoryModalHidden=true}>Cancel</big-button>
+            <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
+            <!-- <p id="error"> -->
+                <!-- {form?.message} -->
+            <!-- </p> -->
+            <!-- {/if} -->
+        </form>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={actCategoryModalBind} class:hidden={actCategoryModalHidden} on:click={actCategoryClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Confirm Act Category</modal-label>
+        <form id="actCategory" action="?/actCategory" method="POST">
+            <content>
+                <input form="actCategory" name="id" type="number" value={actCategoryID} hidden>
+                <h3>Are you sure you want to act this Category?</h3>
+                <Category category={data.categories[getCategoryByID(actCategoryID)]} show_edit_delete={false}/>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <input type="submit" class="big-button" value="Confirm">
+            <big-button on:click={() => actCategoryModalHidden=true}>Cancel</big-button>
             <!-- {#if (form?.message) && form?.message !== "All Good!"} -->
             <!-- <p id="error"> -->
                 <!-- {form?.message} -->
