@@ -47,6 +47,23 @@ export const actions = {
         const hack = url.pathname;
         const data = await request.formData();
         const id = data.get("id") as String;
+        const cleanup = data.get("cleanup") as String;
+
+        if (Number(cleanup) === -1) {
+            let curr_balance = Balance.current();
+            let incomes = Income.ofCategory(Number(id));
+            let expenses = Expense.ofCategory(Number(id));
+
+            incomes.forEach((income) => curr_balance.amountUsd -= income.amountUsd);
+            expenses.forEach((expense) => curr_balance.amountUsd += expense.amountUsd);
+
+            db.prepare("DELETE FROM income WHERE source = ?").run(Number(id));
+            db.prepare("DELETE FROM expense WHERE source = ?").run(Number(id));
+            db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(curr_balance.amountUsd, 1);
+        }else {
+            db.prepare("UPDATE income SET source = ? WHERE source = ?").run(Number(cleanup), Number(id));
+            db.prepare("UPDATE expense SET source = ? WHERE source = ?").run(Number(cleanup), Number(id));
+        }
         
         db.prepare("DELETE FROM categories WHERE id = ?").run(Number(id));
     }

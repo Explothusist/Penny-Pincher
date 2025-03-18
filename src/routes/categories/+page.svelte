@@ -168,6 +168,15 @@
                 <input form="deleteCategory" name="id" type="number" value={deleteCategoryID} hidden>
                 <h3>Are you sure you want to delete this Category?</h3>
                 <Category category={data.categories[getCategoryByID(deleteCategoryID)]} show_edit_delete={false}/>
+                <h3>What to do with Expenses/Incomes in this Category?</h3>
+                <select form="deleteCategory" name="cleanup">
+                    <option value=-1>Delete All</option>
+                    {#each nonzero_categories as category}
+                        {#if category.id !== deleteCategoryID}
+                            <option value={category.id}>Move to {category.name}</option>
+                        {/if}
+                    {/each}
+                </select>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->

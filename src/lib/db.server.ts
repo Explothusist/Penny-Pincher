@@ -136,6 +136,20 @@ export class Income {
         });
     }
 
+    static ofCategory(id: number) {
+        const query = "SELECT id,amount,date,source FROM income WHERE source = ? ORDER BY date DESC;";
+        const rows: any[] = db.prepare(query).all(id);
+
+        return rows.map(function(row: any) {
+            return new Income(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
     toJSON() {
         const out = {...this};
         return out;
@@ -164,6 +178,20 @@ export class Expense {
     static recent(count: number = 25) {
         const query = "SELECT id,amount,date,source FROM expense ORDER BY date DESC LIMIT ?;";
         const rows: any[] = db.prepare(query).all([count]);
+
+        return rows.map(function(row: any) {
+            return new Expense(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
+    static ofCategory(id: number) {
+        const query = "SELECT id,amount,date,source FROM expense WHERE source = ? ORDER BY date DESC;";
+        const rows: any[] = db.prepare(query).all(id);
 
         return rows.map(function(row: any) {
             return new Expense(

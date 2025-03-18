@@ -95,6 +95,22 @@
     let toggled_income = data.recentIncome;
     let toggled_expense = data.recentExpense;
 
+    function get_category(id: number) {
+        for (let i = 0; i < data.categories.length; i++) {
+            if (data.categories[i].id === id) {
+                return data.categories[i];
+            }
+        }
+        console.log(id);
+    }
+    function get_category_index(id: number) {
+        for (let i = 0; i < data.categories.length; i++) {
+            if (data.categories[i].id === id) {
+                return i;
+            }
+        }
+    }
+
     function get_toggled_income() {
         toggled_income = data.recentIncome.filter((income) => category_display[income.category]);
     }
@@ -153,7 +169,7 @@
             <box-content>
                 <div class="scroll">
                     {#each toggled_income as income}
-                        <Income {income} category={data.categories[income.category]} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
+                        <Income {income} category={get_category(income.category)} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
                     {/each}
                     <ShowMoreButton link={"/?income="+(data.income_loaded+50)} />
                 </div>
@@ -164,7 +180,7 @@
             <box-content>
                 <div class="scroll">
                     {#each toggled_expense as expense}
-                        <Expense {expense} category={data.categories[expense.category]} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
+                        <Expense {expense} category={get_category(expense.category)} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
                     {/each}
                     <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)} />
                 </div>
@@ -222,7 +238,7 @@
                 <input form="editIncome" name="old_amount" type="number" value={data.recentIncome[getIncomeByID(editIncomeID)].amountUsd} hidden>
                 <input form="editIncome" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <!-- <h3>Are you sure you want to edit this Income?</h3> -->
-                <Income income={data.recentIncome[getIncomeByID(editIncomeID)]} category={data.categories[data.recentIncome[getIncomeByID(editIncomeID)].category]} show_edit_delete={false}/>
+                <Income income={data.recentIncome[getIncomeByID(editIncomeID)]} category={get_category(data.recentIncome[getIncomeByID(editIncomeID)].category)} show_edit_delete={false}/>
 
                 <block-cont>
                     <faint>Amount:</faint>
@@ -265,7 +281,7 @@
                 <input form="deleteIncome" name="old_amount" type="number" value={data.recentIncome[getIncomeByID(deleteIncomeID)].amountUsd} hidden>
                 <input form="deleteIncome" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <h3>Are you sure you want to delete this Income?</h3>
-                <Income income={data.recentIncome[getIncomeByID(deleteIncomeID)]} category={data.categories[data.recentIncome[getIncomeByID(deleteIncomeID)].category]} show_edit_delete={false}/>
+                <Income income={data.recentIncome[getIncomeByID(deleteIncomeID)]} category={get_category(data.recentIncome[getIncomeByID(deleteIncomeID)].category)} show_edit_delete={false}/>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -329,7 +345,7 @@
                 <input form="editExpense" name="old_amount" type="number" value={data.recentExpense[getExpenseByID(editExpenseID)].amountUsd} hidden>
                 <input form="editExpense" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <!-- <h3>Are you sure you want to edit this Expense?</h3> -->
-                <Expense expense={data.recentExpense[getExpenseByID(editExpenseID)]} category={data.categories[data.recentExpense[getExpenseByID(editExpenseID)].category]} show_edit_delete={false}/>
+                <Expense expense={data.recentExpense[getExpenseByID(editExpenseID)]} category={get_category(data.recentExpense[getExpenseByID(editExpenseID)].category)} show_edit_delete={false}/>
 
                 <block-cont>
                     <faint>Amount:</faint>
@@ -372,7 +388,7 @@
                 <input form="deleteExpense" name="old_amount" type="number" value={data.recentExpense[getExpenseByID(deleteExpenseID)].amountUsd} hidden>
                 <input form="deleteExpense" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <h3>Are you sure you want to delete this Expense?</h3>
-                <Expense expense={data.recentExpense[getExpenseByID(deleteExpenseID)]} category={data.categories[data.recentExpense[getExpenseByID(deleteExpenseID)].category]} show_edit_delete={false}/>
+                <Expense expense={data.recentExpense[getExpenseByID(deleteExpenseID)]} category={get_category(data.recentExpense[getExpenseByID(deleteExpenseID)].category)} show_edit_delete={false}/>
             </content>
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
