@@ -8,6 +8,7 @@
     import IncomeTitleBar from "$lib/components/IncomeTitleBar.svelte";
     import ExpenseTitleBar from "$lib/components/ExpenseTitleBar.svelte";
     import ShowMoreButton from "$lib/components/ShowMoreButton.svelte";
+    import CategoryCheckbox from "$lib/components/CategoryCheckbox.svelte";
     
     export let form, data;
 
@@ -154,13 +155,13 @@
         <link-box id="categories">
             <LinkButton link="/categories" text="Categories" />
         </link-box>
+        <link-box id="actions">
+            <LinkButton link="/action" text="Actions" />
+        </link-box>
     </link-boxes>
     <link-boxes class="links">
         {#each nonzero_categories as category}
-            <link-box style={"background-color: "+category.color+"40;"}>
-                <input type="checkbox" id={"cat_"+category.id} on:click={() => toggle_category(category.id)} checked >
-                <label for={"cat_"+category.id}>{category.name}</label>
-            </link-box>
+            <CategoryCheckbox category={category} toggle_category={toggle_category} />
         {/each}
     </link-boxes>
     <boxes>
@@ -509,6 +510,11 @@
         grid-column: 4;
         grid-row: 1;
     }
+    #actions {
+        margin: 10px;
+        grid-column: 5;
+        grid-row: 1;
+    }
 
 
     
@@ -557,7 +563,7 @@
     }
     link-boxes {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 10px;
         /* grid-auto-columns: minmax(100px, auto); */
         grid-auto-rows: minmax(25px, auto);
