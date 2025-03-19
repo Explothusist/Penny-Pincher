@@ -1,4 +1,3 @@
-import type ShowMoreButton from '$lib/components/ShowMoreButton.svelte';
 import { Income, Expense, Balance, Category } from '$lib/db.server';
 import { redirect } from '@sveltejs/kit';
 import Database from 'better-sqlite3';
@@ -80,14 +79,8 @@ export const actions = {
         }else if (Number(toDo) === -1) {
             // Delete All
             let curr_balance = Balance.current();
-            // console.log(curr_balance);
             if (Boolean(incomeToggle)) {
-                // console.log(category_ids);
-                // console.log(categoryToggles);
                 for (let i = 0; i < categoryToggles.length; i++) {
-                    // console.log("NEW LOOP !!! I = "+i+" = I !!! POOL WEN");
-                    // console.log(category_ids[i]);
-                    // console.log(categoryToggles[i]);
                     if (categoryToggles[i]) {
                         let temp_condition = "(source = ?"+condition+")";
                         let temp_run_params = [Number(category_ids[i]), ...run_params];
@@ -96,14 +89,11 @@ export const actions = {
                         if (incomes.length > 0) {
                             incomes.forEach((income) => curr_balance.amountUsd -= income.amountUsd);
 
-                            // console.log(temp_condition);
-
                             db.prepare("DELETE FROM income WHERE "+temp_condition).run(...temp_run_params);
                         }
                     }
                 }
             }
-            console.log("Gets here first!");
             if (Boolean(expenseToggle)) {
                 for (let i = 0; i < categoryToggles.length; i++) {
                     if (categoryToggles[i]) {
@@ -114,18 +104,34 @@ export const actions = {
                         if (expenses.length > 0) {
                             expenses.forEach((expense) => curr_balance.amountUsd += expense.amountUsd);
                             
-                            // console.log(temp_condition);
-
                             db.prepare("DELETE FROM expense WHERE "+temp_condition).run(...temp_run_params);
                         }
                     }
                 }
             }
-            console.log("Gets here!");
             db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(curr_balance.amountUsd, 1);
-            console.log("Gets here too!");
         }else {
             // Move to Category
+            if (Boolean(incomeToggle)) {
+                for (let i = 0; i < categoryToggles.length; i++) {
+                    if (categoryToggles[i]) {
+                        let temp_condition = "(source = ?"+condition+")";
+                        let temp_run_params = [Number(category_ids[i]), ...run_params];
+
+                        db.prepare("UPDATE income SET source = ? WHERE "+temp_condition).run(Number(toDo), ...temp_run_params);
+                    }
+                }
+            }
+            if (Boolean(expenseToggle)) {
+                for (let i = 0; i < categoryToggles.length; i++) {
+                    if (categoryToggles[i]) {
+                        let temp_condition = "(source = ?"+condition+")";
+                        let temp_run_params = [Number(category_ids[i]), ...run_params];
+
+                        db.prepare("UPDATE expense SET source = ? WHERE "+temp_condition).run(Number(toDo), ...temp_run_params);
+                    }
+                }
+            }
         }
 
         throw redirect(303, '/');

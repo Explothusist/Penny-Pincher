@@ -140,9 +140,6 @@
     });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
-<div id="topbar">
-    <Logo />
-</div>
 <div id="mainstuff">
     <balance>
         <Balance balance={data.currentBalance}/>
@@ -159,6 +156,9 @@
         </link-box>
         <link-box id="actions">
             <LinkButton link="/action" text="Actions" />
+        </link-box>
+        <link-box id="import">
+            <LinkButton link="/import" text="Import" />
         </link-box>
     </link-boxes>
     <link-boxes class="links">
@@ -408,12 +408,6 @@
 
 
 <style>
-    #topbar {
-        width: 98%;
-        display: flex;
-        justify-content: left;
-        margin-left: 2%;
-    }
 
     #mainstuff {
         /* width: max(80%, min(800px, 90%)); */
@@ -495,24 +489,29 @@
         /* background-color: green; */
         margin: 10px;
         
-        grid-column: 2;
+        grid-column: 1;
         grid-row: 1;
     }
     #graphs {
         /* background-color: yellow; */
         margin: 10px;
         
-        grid-column: 3;
+        grid-column: 2;
         grid-row: 1;
     }
     #categories {
         /* background-color: yellow; */
         margin: 10px;
         
-        grid-column: 4;
+        grid-column: 3;
         grid-row: 1;
     }
     #actions {
+        margin: 10px;
+        grid-column: 4;
+        grid-row: 1;
+    }
+    #import {
         margin: 10px;
         grid-column: 5;
         grid-row: 1;
@@ -565,7 +564,7 @@
     }
     link-boxes {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         gap: 10px;
         /* grid-auto-columns: minmax(100px, auto); */
         grid-auto-rows: minmax(25px, auto);

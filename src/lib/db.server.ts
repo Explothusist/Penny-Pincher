@@ -130,9 +130,58 @@ export class Income {
         });
     }
 
+    static recentGivenParams(count: number = 25, condition: string, params: number[]) {
+        if (condition !== "") {
+            condition = "WHERE "+condition;
+        }
+        const query = "SELECT id,amount,date,source FROM income "+condition+" ORDER BY date DESC LIMIT ?;";
+        const rows: any[] = db.prepare(query).all(count, ...params);
+
+        if (rows.length === 0) {
+            return [Income.errorCode()];
+        }
+
+        return rows.map(function(row: any) {
+            return new Income(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
     static allSince(date: number) {
         const query = "SELECT id,amount,date,source FROM income WHERE date > ? ORDER BY date DESC;";
         const rows: any[] = db.prepare(query).all(date);
+
+        if (rows.length === 0) {
+            return [Income.errorCode()];
+        }
+
+        return rows.map(function(row: any) {
+            return new Income(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
+    static allSinceGivenParams(date: number, condition: string, params: number[]) {
+        if (condition !== "") {
+            condition = "AND ("+condition+")"
+        }
+        const query = "SELECT id,amount,date,source FROM income WHERE date > ? "+condition+" ORDER BY date DESC;";
+        const rows: any[] = db.prepare(query).all(date, ...params);
+
+        console.log(query);
+        console.log(rows);
+
+        if (rows.length === 0) {
+            return [Income.errorCode()];
+        }
 
         return rows.map(function(row: any) {
             return new Income(
@@ -147,6 +196,10 @@ export class Income {
     static ofCategory(id: number) {
         const query = "SELECT id,amount,date,source FROM income WHERE source = ? ORDER BY date DESC;";
         const rows: any[] = db.prepare(query).all(id);
+
+        if (rows.length === 0) {
+            return [Income.errorCode()];
+        }
 
         return rows.map(function(row: any) {
             return new Income(
@@ -165,6 +218,10 @@ export class Income {
         // console.log(...run_params);
         
         const rows: any[] = db.prepare(query).all(...run_params);
+
+        if (rows.length === 0) {
+            return [Income.errorCode()];
+        }
 
         return rows.map(function(row: any) {
             return new Income(

@@ -1,9 +1,5 @@
 <script lang="ts">
-    import Logo from "$lib/components/Logo.svelte";
-    import LinkButton from "$lib/components/LinkButton.svelte";
     import { onMount } from "svelte";
-    import Category from "$lib/components/Category.svelte";
-    import CategoryTitleBar from "$lib/components/CategoryTitleBar.svelte";
     import CategoryCheckbox from "$lib/components/CategoryCheckbox.svelte";
     
     export let form, data;
@@ -19,6 +15,18 @@
         nonzero_categories.forEach((category) => string += category.id+", ");
         return string;
     };
+    
+    const one_week = 43200 * 14;
+
+    let DateToggle: HTMLElement;
+    let RecentToggle: HTMLElement;
+
+    function flip_date() {
+        DateToggle.checked = !DateToggle.checked;
+    };
+    function flip_recent() {
+        RecentToggle.checked = !RecentToggle.checked;
+    };
 
     onMount(() => {
         if(data.message){
@@ -28,20 +36,9 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Actions</h1>
-    <form id="actionStuff" action="?/doAction" method="POST">
+    <slot />
+    <form id="actionStuff" action="?/applySettings" method="POST">
         <content>
-            <h3>What Expenses/Incomes?</h3>
-            <content>
-                <link-box>
-                    <input type="checkbox" form="actionStuff" name="incomeToggle" id="incomeToggle" checked >
-                    <label for="incomeToggle">Income</label>
-                </link-box>
-                <link-box>
-                    <input type="checkbox" form="actionStuff" name="expenseToggle" id="expenseToggle" checked >
-                    <label for="expenseToggle">Expense</label>
-                </link-box>
-            </content>
             <content>
                 <input type="text" form="actionStuff" name="categories" value={getCategoryIds()} hidden>
                 {#each nonzero_categories as category}
@@ -51,40 +48,27 @@
                 {/each}
             </content>
             <content>
-                <input type="checkbox" form="actionStuff" name="minValueToggle" id="minValueToggle" >
-                <label for="minValueToggle">Amount Greater Than:</label>
-                <input type="number" form="actionStuff" name="minValue" >
+                <!-- <input type="checkbox" form="actionStuff" name="dateToggle" id="dateToggle" checked on:change={flip_recent} bind:this={DateToggle} > -->
+                <input type="checkbox" form="actionStuff" name="dateToggle" id="dateToggle" checked={data.dateToggle} on:change={flip_recent} bind:this={DateToggle} >
+                <label for="dateToggle">Dates from </label>
+                <!-- <input type="date" form="actionStuff" name="minDate" value={new Date(Date.now()-(one_week*1000)).toISOString().slice(0, 10)} > -->
+                <input type="date" form="actionStuff" name="minDate" value={new Date(data.minDate*1000).toISOString().slice(0, 10)} >
+                <label for="minDate"> To </label>
+                <!-- <input type="date" form="actionStuff" name="maxDate" value={new Date(Date.now()).toISOString().slice(0, 10)} > -->
+                <input type="date" form="actionStuff" name="maxDate" value={new Date(data.maxDate*1000).toISOString().slice(0, 10)} >
             </content>
             <content>
-                <input type="checkbox" form="actionStuff" name="maxValueToggle" id="maxValueToggle" >
-                <label for="maxValueToggle">Amount Less Than:</label>
-                <input type="number" form="actionStuff" name="maxValue" >
+                <!-- <input type="checkbox" form="actionStuff" name="recentToggle" id="recentToggle" on:change={flip_date} bind:this={RecentToggle} > -->
+                <input type="checkbox" form="actionStuff" name="recentToggle" id="recentToggle" checked={data.recentToggle} on:change={flip_date} bind:this={RecentToggle} >
+                <label for="recentToggle">Most Recent from </label>
+                <!-- <input type="number" form="actionStuff" name="minRecent" value=0 > -->
+                <input type="number" form="actionStuff" name="minRecent" value={data.minRecent} >
+                <label for="minRecent"> To </label>
+                <!-- <input type="number" form="actionStuff" name="maxRecent" value=50 > -->
+                <input type="number" form="actionStuff" name="maxRecent" value={data.maxRecent} >
             </content>
-            <content>
-                <input type="checkbox" form="actionStuff" name="minDateToggle" id="minDateToggle" >
-                <label for="minDateToggle">Later Than:</label>
-                <input type="date" form="actionStuff" name="minDate" >
-            </content>
-            <content>
-                <input type="checkbox" form="actionStuff" name="maxDateToggle" id="maxDateToggle" >
-                <label for="maxDateToggle">Earlier Than:</label>
-                <input type="date" form="actionStuff" name="maxDate" >
-            </content>
-            <!-- <input form="actionStuff" name="id" type="number" value={deleteCategoryID} hidden> -->
-            <h3>What to do with these Expenses/Incomes?</h3>
-            <select form="actionStuff" name="toDo">
-                <option value=-1>Delete All</option>
-                {#each nonzero_categories as category}
-                    <option value={category.id}>Move to {category.name}</option>
-                {/each}
-                <option value=-2>Print Table</option>
-                <option value=-3>Export CSV</option>
-            </select>
         </content>
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <input type="submit" class="big-button" value="Confirm">
-        <!-- <big-button on:click={() => deleteCategoryModalHidden=true}>Cancel</big-button> -->
+        <input type="submit" class="big-button" value="Apply">
     </form>
 </div>
 

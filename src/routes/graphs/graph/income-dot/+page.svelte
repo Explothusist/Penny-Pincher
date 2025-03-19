@@ -1,5 +1,6 @@
 <script lang="ts">
     import Chart from 'chart.js/auto';
+    import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
     import Logo from "$lib/components/Logo.svelte";
     import { onMount } from "svelte";
     import type { Income } from '$lib/db.server.js';
@@ -38,9 +39,6 @@
     })                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
-<div id="topbar">
-    <Logo />
-</div>
 <div id="mainstuff">
     <h1>Recent Income - Dot</h1>
     <chart-container>
@@ -49,12 +47,6 @@
 </div>
 
 <style>
-    #topbar {
-        width: 98%;
-        display: flex;
-        justify-content: left;
-        margin-left: 2%;
-    }
 
     #mainstuff {
         /* width: max(80%, min(800px, 90%)); */

@@ -68,9 +68,6 @@
     });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
-<div id="topbar">
-    <Logo />
-</div>
 <div id="mainstuff">
     <CategoryTitleBar onClickAdd={addCategoryClickRaise} />
     {#each nonzero_categories as category}
@@ -216,12 +213,6 @@
 </modal>
 
 <style>
-    #topbar {
-        width: 98%;
-        display: flex;
-        justify-content: left;
-        margin-left: 2%;
-    }
 
     #mainstuff {
         /* width: max(80%, min(800px, 90%)); */

@@ -1,6 +1,4 @@
 <script>
-    import Logo from "$lib/components/Logo.svelte";
-    import LinkButton from "$lib/components/LinkButton.svelte";
     import { onMount } from "svelte";
     import GraphLinkButton from "$lib/components/GraphLinkButton.svelte";
     export let form, data;
@@ -12,18 +10,15 @@
     })                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
-<div id="topbar">
-    <Logo />
-</div>
 <div id="mainstuff">
     <labeled-box>
         <box-label>Balance Over Time</box-label>
         <graphs>
             <graph class="col1">
-                <GraphLinkButton text="Line" link="/graphs/balance-line" image="/line_graph.png" />
+                <GraphLinkButton text="Line" link="/graphs/graph/balance-line" image="/line_graph.png" />
             </graph>
             <graph class="col2">
-                <GraphLinkButton text="Average" link="/graphs/balance-average" image="/average_graph.png" />
+                <GraphLinkButton text="Average" link="/graphs/graph/balance-average" image="/average_graph.png" />
             </graph>
         </graphs>
     </labeled-box>
@@ -31,13 +26,13 @@
         <box-label>Expenses Over Time</box-label>
         <graphs>
             <graph class="col1">
-                <GraphLinkButton text="Dot" link="/graphs/expense-dot" image="/dot_graph.png" />
+                <GraphLinkButton text="Dot" link="/graphs/graph/expense-dot" image="/dot_graph.png" />
             </graph>
             <graph class="col2">
-                <GraphLinkButton text="Average" link="/graphs/expense-average" image="/average_graph.png" />
+                <GraphLinkButton text="Average" link="/graphs/graph/expense-average" image="/average_graph.png" />
             </graph>
             <graph class="col3">
-                <GraphLinkButton text="Histogram" link="/graphs/expense-histogram" image="/histogram_graph.png" />
+                <GraphLinkButton text="Histogram" link="/graphs/graph/expense-histogram" image="/histogram_graph.png" />
             </graph>
         </graphs>
     </labeled-box>
@@ -45,26 +40,19 @@
         <box-label>Income Over Time</box-label>
         <graphs>
             <graph class="col1">
-                <GraphLinkButton text="Dot" link="/graphs/income-dot" image="/dot_graph.png" />
+                <GraphLinkButton text="Dot" link="/graphs/graph/income-dot" image="/dot_graph.png" />
             </graph>
             <graph class="col2">
-                <GraphLinkButton text="Average" link="/graphs/income-average" image="/average_graph.png" />
+                <GraphLinkButton text="Average" link="/graphs/graph/income-average" image="/average_graph.png" />
             </graph>
             <graph class="col3">
-                <GraphLinkButton text="Histogram" link="/graphs/income-histogram" image="/histogram_graph.png" />
+                <GraphLinkButton text="Histogram" link="/graphs/graph/income-histogram" image="/histogram_graph.png" />
             </graph>
         </graphs>
     </labeled-box>
 </div>
 
 <style>
-    #topbar {
-        width: 98%;
-        display: flex;
-        justify-content: left;
-        margin-left: 2%;
-    }
-
     #mainstuff {
         /* width: max(80%, min(800px, 90%)); */
         /* margin-left: 10%; */

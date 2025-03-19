@@ -1,9 +1,17 @@
+<script>
+
+    import Logo from "$lib/components/Logo.svelte";
+
+</script>
 <svelte:head>
     <title>Penny Pincher</title>
 </svelte:head>
 
 <page>
     <content>
+        <div id="topbar">
+            <Logo />
+        </div>
         <slot />
     </content>
 </page>
@@ -11,6 +19,13 @@
 
 
 <style> 
+    #topbar {
+        width: 98%;
+        display: flex;
+        justify-content: left;
+        margin-left: 2%;
+    }
+    
     :global(:root) {
         --accent-1: #272785;
         --accent0: #3333e4;
