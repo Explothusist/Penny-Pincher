@@ -61,7 +61,17 @@
             <content>
                 <input type="checkbox" form="actionStuff" name="maxValueToggle" id="maxValueToggle" >
                 <label for="maxValueToggle">Amount Less Than:</label>
-                <input type="number" form="actionStuff" name="minValue" >
+                <input type="number" form="actionStuff" name="maxValue" >
+            </content>
+            <content>
+                <input type="checkbox" form="actionStuff" name="minDateToggle" id="minDateToggle" >
+                <label for="minDateToggle">Later Than:</label>
+                <input type="date" form="actionStuff" name="minDate" >
+            </content>
+            <content>
+                <input type="checkbox" form="actionStuff" name="maxDateToggle" id="maxDateToggle" >
+                <label for="maxDateToggle">Earlier Than:</label>
+                <input type="date" form="actionStuff" name="maxDate" >
             </content>
             <!-- <input form="actionStuff" name="id" type="number" value={deleteCategoryID} hidden> -->
             <h3>What to do with these Expenses/Incomes?</h3>

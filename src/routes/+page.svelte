@@ -12,6 +12,8 @@
     
     export let form, data;
 
+    console.log(data);
+
     function getIncomeByID(id: number) {
         return data.recentIncome.map((income) => income.id).indexOf(id);
     };
@@ -23,19 +25,19 @@
     let addIncomeModalHidden = true;
     let editIncomeModalBind: HTMLElement;
     let editIncomeModalHidden = true;
-    let editIncomeID = 1;
+    let editIncomeID = data.recentIncome[0].id;
     let deleteIncomeModalBind: HTMLElement;
     let deleteIncomeModalHidden = true;
-    let deleteIncomeID = 1;
+    let deleteIncomeID = data.recentIncome[0].id;
     
     let addExpenseModalBind: HTMLElement;
     let addExpenseModalHidden = true;
     let editExpenseModalBind: HTMLElement;
     let editExpenseModalHidden = true;
-    let editExpenseID = 1;
+    let editExpenseID = data.recentExpense[0].id;
     let deleteExpenseModalBind: HTMLElement;
     let deleteExpenseModalHidden = true;
-    let deleteExpenseID = 1;
+    let deleteExpenseID = data.recentExpense[0].id;
     
     function addIncomeClickRaise() {
         addIncomeModalHidden = false;

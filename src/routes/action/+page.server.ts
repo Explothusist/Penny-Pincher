@@ -1,5 +1,6 @@
 import type ShowMoreButton from '$lib/components/ShowMoreButton.svelte';
 import { Income, Expense, Balance, Category } from '$lib/db.server';
+import { redirect } from '@sveltejs/kit';
 import Database from 'better-sqlite3';
 const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
@@ -29,7 +30,15 @@ export const actions = {
         const minValue = data.get("minValue") as String;
         const maxValueToggle = data.get("maxValueToggle") as String;
         const maxValue = data.get("maxValue") as String;
+        const minDateToggle = data.get("minDateToggle") as String;
+        const minDate = data.get("minDate") as String;
+        const maxDateToggle = data.get("maxDateToggle") as String;
+        const maxDate = data.get("maxDate") as String;
         const toDo = data.get("toDo") as String;
+
+        const one_day = 43200 * 2;
+        const minDateFormatted = new Date(String(minDate)).getTime()/1000;
+        const maxDateFormatted = new Date(String(maxDate)).getTime()/1000 + one_day;
         
         const categories = data.get("categories") as String;
         let category_ids = categories.split(", ");
@@ -39,18 +48,29 @@ export const actions = {
             categoryToggles.push(Boolean(data.get("cat_"+Number(category_ids[i])+"_checked")));
         }
 
-        let condition = "WHERE ";
+        let condition = "";
+        let run_params = [];
         if (Boolean(minValueToggle)) {
-            if (condition !== "WHERE ") {
-                condition += ", ";
-            }
-            condition += "amount > "+Number(minValue);
+            condition += " AND ";
+            condition += "amount >= ?";
+            run_params.push(Number(minValue));
+            console.log(run_params);
         }
         if (Boolean(maxValueToggle)) {
-            if (condition !== "WHERE ") {
-                condition += ", ";
-            }
-            condition += "amount < "+Number(maxValue);
+            condition += " AND ";
+            condition += "amount <= ?";
+            run_params.push(Number(maxValue));
+            console.log(run_params);
+        }
+        if (Boolean(minDateToggle)) {
+            condition += " AND ";
+            condition += "date >= ?";
+            run_params.push(Number(minDateFormatted));
+        }
+        if (Boolean(maxDateToggle)) {
+            condition += " AND ";
+            condition += "date <= ?";
+            run_params.push(Number(maxDateFormatted));
         }
 
         if (Number(toDo) === -3) {
@@ -59,11 +79,56 @@ export const actions = {
             // Print Table / Export PDF
         }else if (Number(toDo) === -1) {
             // Delete All
+            let curr_balance = Balance.current();
+            // console.log(curr_balance);
+            if (Boolean(incomeToggle)) {
+                // console.log(category_ids);
+                // console.log(categoryToggles);
+                for (let i = 0; i < categoryToggles.length; i++) {
+                    // console.log("NEW LOOP !!! I = "+i+" = I !!! POOL WEN");
+                    // console.log(category_ids[i]);
+                    // console.log(categoryToggles[i]);
+                    if (categoryToggles[i]) {
+                        let temp_condition = "(source = ?"+condition+")";
+                        let temp_run_params = [Number(category_ids[i]), ...run_params];
+                        let incomes = Income.givenParams(temp_condition, temp_run_params);
+
+                        if (incomes.length > 0) {
+                            incomes.forEach((income) => curr_balance.amountUsd -= income.amountUsd);
+
+                            // console.log(temp_condition);
+
+                            db.prepare("DELETE FROM income WHERE "+temp_condition).run(...temp_run_params);
+                        }
+                    }
+                }
+            }
+            console.log("Gets here first!");
+            if (Boolean(expenseToggle)) {
+                for (let i = 0; i < categoryToggles.length; i++) {
+                    if (categoryToggles[i]) {
+                        let temp_condition = "(source = ?"+condition+")";
+                        let temp_run_params = [Number(category_ids[i]), ...run_params];
+                        let expenses = Expense.givenParams(temp_condition, temp_run_params);
+
+                        if (expenses.length > 0) {
+                            expenses.forEach((expense) => curr_balance.amountUsd += expense.amountUsd);
+                            
+                            // console.log(temp_condition);
+
+                            db.prepare("DELETE FROM expense WHERE "+temp_condition).run(...temp_run_params);
+                        }
+                    }
+                }
+            }
+            console.log("Gets here!");
+            db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(curr_balance.amountUsd, 1);
+            console.log("Gets here too!");
         }else {
             // Move to Category
         }
 
-        db.prepare("INSERT INTO categories (name, color) VALUES (?, ?)").run(name, color);
+        throw redirect(303, '/');
     }
 
 };

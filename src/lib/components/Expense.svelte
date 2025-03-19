@@ -16,26 +16,27 @@
     // console.log(category.name);
 </script>
 
-
-<color style={"background-color: "+category.color+"40;"}>
-    <expense>
-        <!-- HACK! -->
-        <time>{new Date(expense.date * 1000).toDateString().split(" ").slice(1, 4).join(" ")}</time>
-        <sep>―</sep>
-        <txt>Expense of</txt>
-        <dollars>${commatizeNumber(expense.amountUsd)}</dollars>
-        <txt>from</txt>
-        <category>{category.name}</category>
-        {#if show_edit_delete}
-            <icon on:click={() => onClickEdit(expense.id)}>
-                <IconEdit />
-            </icon>
-            <icon on:click={() => onClickDelete(expense.id)}>
-                <IconDelete />
-            </icon>
-        {/if}
-    </expense>
-</color>
+{#if expense.id !== -1}
+    <color style={"background-color: "+category.color+"40;"}>
+        <expense>
+            <!-- HACK! -->
+            <time>{new Date(expense.date * 1000).toDateString().split(" ").slice(1, 4).join(" ")}</time>
+            <sep>―</sep>
+            <txt>Expense of</txt>
+            <dollars>${commatizeNumber(expense.amountUsd)}</dollars>
+            <txt>from</txt>
+            <category>{category.name}</category>
+            {#if show_edit_delete}
+                <icon on:click={() => onClickEdit(expense.id)}>
+                    <IconEdit />
+                </icon>
+                <icon on:click={() => onClickDelete(expense.id)}>
+                    <IconDelete />
+                </icon>
+            {/if}
+        </expense>
+    </color>
+{/if}
 
 <style>
     color {

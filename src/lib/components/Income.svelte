@@ -15,25 +15,27 @@
 </script>
 
 
-<color style={"background-color: "+category.color+"40;"}>
-    <income>
-        <!-- HACK! -->
-        <time>{new Date(income.date * 1000).toDateString().split(" ").slice(1, 4).join(" ")}</time>
-        <sep>―</sep>
-        <txt>Income of</txt>
-        <dollars>${commatizeNumber(income.amountUsd)}</dollars>
-        <txt>from</txt>
-        <category>{category.name}</category>
-        {#if show_edit_delete}
-            <icon on:click={() => onClickEdit(income.id)}>
-                <IconEdit />
-            </icon>
-            <icon on:click={() => onClickDelete(income.id)}>
-                <IconDelete />
-            </icon>
-        {/if}
-    </income>
-</color>
+{#if income.id !== -1}
+    <color style={"background-color: "+category.color+"40;"}>
+        <income>
+            <!-- HACK! -->
+            <time>{new Date(income.date * 1000).toDateString().split(" ").slice(1, 4).join(" ")}</time>
+            <sep>―</sep>
+            <txt>Income of</txt>
+            <dollars>${commatizeNumber(income.amountUsd)}</dollars>
+            <txt>from</txt>
+            <category>{category.name}</category>
+            {#if show_edit_delete}
+                <icon on:click={() => onClickEdit(income.id)}>
+                    <IconEdit />
+                </icon>
+                <icon on:click={() => onClickDelete(income.id)}>
+                    <IconDelete />
+                </icon>
+            {/if}
+        </income>
+    </color>
+{/if}
 
 <style>
     color {

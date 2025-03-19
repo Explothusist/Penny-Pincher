@@ -108,9 +108,17 @@ export class Income {
         this.date = date;
     }
 
+    static errorCode() {
+        return new Income(-1, -1, 1, 1);
+    }
+
     static recent(count: number = 25) {
         const query = "SELECT id,amount,date,source FROM income ORDER BY date DESC LIMIT ?;";
         const rows: any[] = db.prepare(query).all([count]);
+
+        if (rows.length === 0) {
+            return [Income.errorCode()];
+        }
 
         return rows.map(function(row: any) {
             return new Income(
@@ -150,6 +158,24 @@ export class Income {
         });
     }
 
+    static givenParams(condition: string, run_params: number[]) {
+        const query = "SELECT id,amount,date,source FROM income WHERE "+condition+" ORDER BY date DESC;";
+
+        // console.log(query);
+        // console.log(...run_params);
+        
+        const rows: any[] = db.prepare(query).all(...run_params);
+
+        return rows.map(function(row: any) {
+            return new Income(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
     toJSON() {
         const out = {...this};
         return out;
@@ -175,9 +201,17 @@ export class Expense {
         this.date = date;
     }
 
+    static errorCode() {
+        return new Income(-1, -1, 1, 1);
+    }
+
     static recent(count: number = 25) {
         const query = "SELECT id,amount,date,source FROM expense ORDER BY date DESC LIMIT ?;";
         const rows: any[] = db.prepare(query).all([count]);
+
+        if (rows.length === 0) {
+            return [Expense.errorCode()];
+        }
 
         return rows.map(function(row: any) {
             return new Expense(
@@ -192,6 +226,20 @@ export class Expense {
     static ofCategory(id: number) {
         const query = "SELECT id,amount,date,source FROM expense WHERE source = ? ORDER BY date DESC;";
         const rows: any[] = db.prepare(query).all(id);
+
+        return rows.map(function(row: any) {
+            return new Expense(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
+    static givenParams(condition: string, run_params: number[]) {
+        const query = "SELECT id,amount,date,source FROM expense WHERE "+condition+" ORDER BY date DESC;";
+        const rows: any[] = db.prepare(query).all(...run_params);
 
         return rows.map(function(row: any) {
             return new Expense(
