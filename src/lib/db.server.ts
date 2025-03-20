@@ -235,6 +235,18 @@ export class Income {
         });
     }
 
+    static fromCSV(shard: string) {
+        console.log(shard);
+        let bits = shard.split(",");
+        console.log(bits);
+        return new Income(
+            0,
+            Number(bits[0]),
+            Number(bits[1]),
+            Number(bits[2])
+        )
+    }
+
     toJSON() {
         const out = {...this};
         return out;
@@ -308,6 +320,16 @@ export class Expense {
                 row.date
             );
         });
+    }
+
+    static fromCSV(shard: string) {
+        let bits = shard.split(",");
+        return new Income(
+            0,
+            Number(bits[0]),
+            Number(bits[1]),
+            Number(bits[2])
+        )
     }
 
     toJSON() {
