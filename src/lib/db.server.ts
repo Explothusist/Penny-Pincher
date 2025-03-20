@@ -130,12 +130,14 @@ export class Income {
         });
     }
 
-    static recentGivenParams(count: number = 25, condition: string, params: number[]) {
+    static allInRecentRangeGivenParams(minRecent: number, maxRecent: number, condition: string, params: number[]) {
         if (condition !== "") {
             condition = "WHERE "+condition;
         }
         const query = "SELECT id,amount,date,source FROM income "+condition+" ORDER BY date DESC LIMIT ?;";
-        const rows: any[] = db.prepare(query).all(count, ...params);
+        const rows: any[] = db.prepare(query).all(...params, maxRecent);
+
+        rows.splice(0, minRecent);
 
         if (rows.length === 0) {
             return [Income.errorCode()];
@@ -169,12 +171,12 @@ export class Income {
         });
     }
 
-    static allSinceGivenParams(date: number, condition: string, params: number[]) {
+    static allInDateRangeGivenParams(minDate: number, maxDate: number, condition: string, params: number[]) {
         if (condition !== "") {
             condition = "AND ("+condition+")"
         }
-        const query = "SELECT id,amount,date,source FROM income WHERE date > ? "+condition+" ORDER BY date DESC;";
-        const rows: any[] = db.prepare(query).all(date, ...params);
+        const query = "SELECT id,amount,date,source FROM income WHERE date > ? AND date < ? "+condition+" ORDER BY date DESC;";
+        const rows: any[] = db.prepare(query).all(minDate, maxDate, ...params);
 
         console.log(query);
         console.log(rows);

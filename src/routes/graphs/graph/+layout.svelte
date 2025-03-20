@@ -28,6 +28,10 @@
         RecentToggle.checked = !RecentToggle.checked;
     };
 
+    function get_category_toggle(id: number) {
+        return data.category_toggles[data.category_ids.indexOf(id)];
+    };
+
     onMount(() => {
         if(data.message){
             alert(data.message);
@@ -43,28 +47,22 @@
                 <input type="text" form="actionStuff" name="categories" value={getCategoryIds()} hidden>
                 {#each nonzero_categories as category}
                     <category>
-                        <CategoryCheckbox category={category} form="actionStuff" />
+                        <CategoryCheckbox category={category} form="actionStuff" prechecked={get_category_toggle(category.id)} />
                     </category>
                 {/each}
             </content>
             <content>
-                <!-- <input type="checkbox" form="actionStuff" name="dateToggle" id="dateToggle" checked on:change={flip_recent} bind:this={DateToggle} > -->
                 <input type="checkbox" form="actionStuff" name="dateToggle" id="dateToggle" checked={data.dateToggle} on:change={flip_recent} bind:this={DateToggle} >
                 <label for="dateToggle">Dates from </label>
-                <!-- <input type="date" form="actionStuff" name="minDate" value={new Date(Date.now()-(one_week*1000)).toISOString().slice(0, 10)} > -->
                 <input type="date" form="actionStuff" name="minDate" value={new Date(data.minDate*1000).toISOString().slice(0, 10)} >
                 <label for="minDate"> To </label>
-                <!-- <input type="date" form="actionStuff" name="maxDate" value={new Date(Date.now()).toISOString().slice(0, 10)} > -->
                 <input type="date" form="actionStuff" name="maxDate" value={new Date(data.maxDate*1000).toISOString().slice(0, 10)} >
             </content>
             <content>
-                <!-- <input type="checkbox" form="actionStuff" name="recentToggle" id="recentToggle" on:change={flip_date} bind:this={RecentToggle} > -->
                 <input type="checkbox" form="actionStuff" name="recentToggle" id="recentToggle" checked={data.recentToggle} on:change={flip_date} bind:this={RecentToggle} >
                 <label for="recentToggle">Most Recent from </label>
-                <!-- <input type="number" form="actionStuff" name="minRecent" value=0 > -->
                 <input type="number" form="actionStuff" name="minRecent" value={data.minRecent} >
                 <label for="minRecent"> To </label>
-                <!-- <input type="number" form="actionStuff" name="maxRecent" value=50 > -->
                 <input type="number" form="actionStuff" name="maxRecent" value={data.maxRecent} >
             </content>
         </content>

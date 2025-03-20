@@ -32,7 +32,7 @@
                 <GraphLinkButton text="Average" link="/graphs/graph/expense-average" image="/average_graph.png" />
             </graph>
             <graph class="col3">
-                <GraphLinkButton text="Histogram" link="/graphs/graph/expense-histogram" image="/histogram_graph.png" />
+                <GraphLinkButton text="Histogram" link="/graphs/graph/expense-hist" image="/histogram_graph.png" />
             </graph>
         </graphs>
     </labeled-box>
@@ -46,7 +46,7 @@
                 <GraphLinkButton text="Average" link="/graphs/graph/income-average" image="/average_graph.png" />
             </graph>
             <graph class="col3">
-                <GraphLinkButton text="Histogram" link="/graphs/graph/income-histogram" image="/histogram_graph.png" />
+                <GraphLinkButton text="Histogram" link="/graphs/graph/income-hist" image="/histogram_graph.png" />
             </graph>
         </graphs>
     </labeled-box>
