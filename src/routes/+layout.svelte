@@ -1,8 +1,13 @@
-<script>
+<script lang="ts">
 
     import Logo from "$lib/components/Logo.svelte";
+    import Abe from "$lib/components/Abe.svelte"
 
+    function openai() {
+        
+    }
 </script>
+
 <svelte:head>
     <title>Penny Pincher</title>
 </svelte:head>
@@ -12,8 +17,16 @@
         <div id="topbar">
             <Logo />
         </div>
+        <Abe />
         <slot />
+        
     </content>
+    <!-- <div id="gemini-div" class="ai-helper">
+        <div id="gemini-box">
+
+        </div>
+        <button id="gemini-button" on:click={openai}>?</button>
+    </div> -->
 </page>
 
 
@@ -64,5 +77,20 @@
         position: relative;
         height: 100%;
         overflow-y: auto;
+    }
+
+    #gemini-div {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+    }
+
+    #gemini-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        background-color: var(--accent1);
+        font-weight: 1000;
+        color: white;
     }
 </style>
