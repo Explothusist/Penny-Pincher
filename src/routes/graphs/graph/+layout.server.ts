@@ -17,10 +17,10 @@ export function load(  { cookies, url }) {
     const one_month = one_day*30;
     const one_year = one_day*365;
 
-    const dateToggle = Boolean(url.searchParams.get("date")) || true;
+    const dateToggle = Boolean((url.searchParams.get("date") || "true") === "true");
     const minDate = Number(url.searchParams.get("minDate")) || ((Date.now()/1000)-one_year);
     const maxDate = Number(url.searchParams.get("maxDate")) || ((Date.now()/1000));
-    const recentToggle = Boolean(url.searchParams.get("recent")) || false;
+    const recentToggle = Boolean((url.searchParams.get("recent") || "false") === "true");
     const minRecent = Number(url.searchParams.get("minRecent")) || 0;
     const maxRecent = Number(url.searchParams.get("maxRecent")) || 50;
     
@@ -28,7 +28,7 @@ export function load(  { cookies, url }) {
     const category_toggles_raw = url.searchParams.get("catTgl") || "";
 
     const category_ids = category_ids_raw.split(",").map((id) => Number(id));
-    const category_toggles = category_toggles_raw.split(",").map((tgl) => Boolean(tgl));
+    const category_toggles = category_toggles_raw.split(",").map((tgl) => Boolean(tgl === "true"));
 
     return {
         categories: categories,
@@ -38,6 +38,7 @@ export function load(  { cookies, url }) {
         recentToggle: recentToggle,
         minRecent: minRecent,
         maxRecent: maxRecent,
-        category_toggles: []
+        category_ids: category_ids,
+        category_toggles: category_toggles
     };
 };

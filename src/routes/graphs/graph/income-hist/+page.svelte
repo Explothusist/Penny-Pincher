@@ -6,24 +6,39 @@
     import type { Income } from '$lib/db.server.js';
     export let form, data;
 
+    let number_of_boxes = 10;
+    let base = data.minDate*1000;
+    let increment = ((data.maxDate-data.minDate)/number_of_boxes) * 1000;
+    let boxes = [];
+    for (let i = 0; i < number_of_boxes; i++) {
+        boxes.push({x: base + (increment * i), y: 0});
+    }
+
+    data.recentIncome.forEach((income) => boxes[Math.floor(((income.date*1000)-base)/increment)].y += income.amountUsd);
+
     onMount(() => {
         if(data.message){
             alert(data.message);
         }
         
         (async function() {
-            const xyValues = data.recentIncome.map((function(income: Income) { return{x: income.date*1000, y: income.amountUsd}; }));
+            const xyValues = boxes;
 
             new Chart(
                 "chart_canvas",
                 {
-                    type: "scatter",
+                    type: "bar",
                     data: {
-                        datasets: [{
-                            pointRadius: 4,
-                            pointBackgroundColor: "rgb(0,0,255)",
-                            data: xyValues
-                        }]
+                        labels: boxes.map((box) => box.x),
+                        datasets: [
+                            {
+                                label: 'Income',
+                                data: boxes,
+                                borderColor: "rgb(0,0,255)",
+                                backgroundColor: "rgb(0,0,255)",
+                                barPercentage: 2.0
+                            }
+                        ]
                     },
                     options: {
                         plugins: {
@@ -35,8 +50,8 @@
                             x: (data.dateToggle) ?
                             {
                                 type: "time",
-                                min: data.minDate*1000,
-                                max: data.maxDate*1000
+                                min: data.minDate*1000 - increment/2,
+                                max: data.maxDate*1000 - increment/2
                             } :
                             {
                                 type: "time"
@@ -53,7 +68,7 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Recent Income - Dot</h1>
+    <h1>Recent Income - Histogram</h1>
     <chart-container>
         <canvas id="chart_canvas"></canvas>
     </chart-container>
