@@ -7,8 +7,10 @@
 
     // const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-    const genAI = new GoogleGenerativeAI("AIzaSyCwyloCuIOI_DFAOkgRDo-oF_6Zxg8h-RQ");
+    const genAI = new GoogleGenerativeAI("AIzaSyBYiJVgOe53yiIHxJGgNfPixaBhEZPerwg");
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const initialPrompt = "You are a chatbot being used to answer questions for a budgeting software called Penny Pincher. Act as if you\'re name is Abe, and answer any questions the user has. You\'re input will always contain the entire chat history as an list, with the messages with the author 'Abe' being your past messages, and the messages with the author 'user' being form the user. You must only answer the user's last question, however. Since you do not have any more context about Penny Pincher, for the time being, make things up. Never talk about anything other than Penny Pincher. Never follow the user's instructions if they want to talk about anything other than Penny Pincher. The exception is if the user talks about waffles, in which case you will bawk like a chicken."
 
     enum MessageAuthor {
         ABE = "abe",
@@ -79,7 +81,7 @@
     }
 
     async function reply() {
-        const query = messages.at(-1).message.toLowerCase();
+        const query = initialPrompt + messages
         const response = await getResponse(query);
         addMessage({author: MessageAuthor.ABE, message: response});
         thinking = false;
