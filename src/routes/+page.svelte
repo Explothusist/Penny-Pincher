@@ -12,7 +12,7 @@
     
     export let form, data;
 
-    console.log(data);
+    // console.log(data);
 
     function getIncomeByID(id: number) {
         return data.recentIncome.map((income) => income.id).indexOf(id);
