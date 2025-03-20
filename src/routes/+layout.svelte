@@ -17,7 +17,6 @@
         <div id="topbar">
             <Logo />
         </div>
-        <Abe />
         <slot />
         
     </content>
@@ -27,6 +26,7 @@
         </div>
         <button id="gemini-button" on:click={openai}>?</button>
     </div> -->
+    <Abe />
 </page>
 
 
