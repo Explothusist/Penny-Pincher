@@ -56,6 +56,7 @@ export const actions = {
             db.prepare(`INSERT INTO ${table} (amount, date, source) VALUES (?, ?, ?)`)
                 .run(transaction.amountUsd, transaction.date, transaction.category);
 
+            // Subtract if an expense
             currentBalance.amountUsd += transaction.amountUsd * (transaction instanceof Income ? 1 : -1);
         }
 
