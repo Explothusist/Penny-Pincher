@@ -4,7 +4,7 @@ import Database from 'better-sqlite3';
 const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
 
-export function load(  { cookies, url }) {
+export function load({ cookies, url }) {
     const STUPIDHACK = url.pathname;
     /*  HACK: According to https://kit.svelte.dev/docs/load#rerunning-load-functions-when-do-load-functions-rerun
     load functions will not run when changing pages unless something referenced in the function, such as url, changes. Maybe could be replaced with invalidateAll()? 
@@ -20,71 +20,49 @@ export function load(  { cookies, url }) {
 export const actions = {
 
     importCSV: async ({ cookies, request, url }) => {
+        /* HACK: According to https://kit.svelte.dev/docs/load#rerunning-load-functions-when-do-load-functions-rerun
+        load functions will not run when changing pages unless something referenced in the function, such as url,
+        changes. Maybe could be replaced with invalidateAll()? It must be url.pathname too, not just url. */
+        const _ = url.pathname;
 
-        const hack = url.pathname;
+        // Decode metadata
         const data = await request.formData();
-        const importType = data.get("importType") as String;
-        const importCategory = data.get("importCategory") as String;
+        const importType = Number(data.get("importType"));
+        const importCategory = Number(data.get("importCategory"));
 
-        const CSVfile = data.get("CSVfile") as File;
-        const contents = await CSVfile.text();
-        
-        let curr_balance = Balance.current();
+        // Decode CSV file as text
+        const csvFile = data.get("CSVfile") as File;
+        const contents = await csvFile.text();
 
-        let override_category = Boolean(Number(importCategory) !== -1);
+        const currentBalance = Balance.current();
+        const overrideCategory = importCategory !== -1;
 
-        if (Number(importType) === 1) {
-            // As Income
-            let incomes = contents.split("\n").map((income) => Income.fromCSV(income));
-            incomes.pop();
+        // Will be corresponding constructor, or adaptiveFromCSV if unapplicable.
+        const csvConstructor = {
+            1: Income.fromCSV,
+            2: Expense.fromCSV,
+        }[importType] || adaptiveFromCSV;
 
-            if (override_category) {
-                incomes.forEach((income) => income.category = Number(importCategory));
-            }
+        // Transactions will be objects of their respective types, `Income` or `Expense`.
+        const transactions = contents.split("\n").map(csvConstructor).filter(x => x);
 
-            for (let i = 0; i < incomes.length; i++) {
-                db.prepare("INSERT INTO income (amount, date, source) VALUES (?, ?, ?)").run(incomes[i].amountUsd, incomes[i].date, incomes[i].category);
-                curr_balance.amountUsd += incomes[i].amountUsd;
-            }
-        }else if (Number(importType) === 2) {
-            // As Expense
-            let expenses = contents.split("\n").map((expense) => Expense.fromCSV(expense));
-            expenses.pop();
-
-            if (override_category) {
-                expenses.forEach((expense) => expense.category = Number(importCategory));
-            }
-
-            for (let i = 0; i < expenses.length; i++) {
-                db.prepare("INSERT INTO expense (amount, date, source) VALUES (?, ?, ?)").run(expenses[i].amountUsd, expenses[i].date, expenses[i].category);
-                curr_balance.amountUsd -= expenses[i].amountUsd;
-            }
-        }else {
-            // As Indicated (Penny Pincher export only)
-            let objects = contents.split("\n").map((object) => adaptiveFromCSV(object));
-            objects.pop();
-
-            if (override_category) {
-                objects.forEach((object) => object.category = Number(importCategory));
-            }
-
-            for (let i = 0; i < objects.length; i++) {
-                console.log(objects[i]);
-                console.log(objects[i] instanceof Income);
-                console.log(objects[i] instanceof Expense);
-                if (objects[i] instanceof Income) {
-                    db.prepare("INSERT INTO income (amount, date, source) VALUES (?, ?, ?)").run(objects[i].amountUsd, objects[i].date, objects[i].category);
-                    curr_balance.amountUsd += objects[i].amountUsd;
-                }else {
-                    db.prepare("INSERT INTO expense (amount, date, source) VALUES (?, ?, ?)").run(objects[i].amountUsd, objects[i].date, objects[i].category);
-                    curr_balance.amountUsd -= objects[i].amountUsd;
-                }
-            }
+        if (overrideCategory) {
+            transactions.forEach((transaction) => transaction.category = importCategory);
         }
 
-        db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(curr_balance.amountUsd, 1);
+        for (const transaction of transactions) {
+            // SECURITY: Ensure `table` is of known values to avoid SQL injection
+            const table = transaction instanceof Income ? "income" : "expense";
+            db.prepare(`INSERT INTO ${table} (amount, date, source) VALUES (?, ?, ?)`)
+                .run(transaction.amountUsd, transaction.date, transaction.category);
 
-        throw redirect(303, '/');
+            currentBalance.amountUsd += transaction.amountUsd * (transaction instanceof Income ? 1 : -1);
+        }
+
+        db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(currentBalance.amountUsd, 1);
+
+        // Redirect to home
+        throw redirect(303, "/");
     }
 
 };
