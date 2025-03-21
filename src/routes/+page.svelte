@@ -172,23 +172,20 @@
         <labeled-box id="income">
             <box-label><IncomeTitleBar onClickAdd={addIncomeClickRaise}/></box-label>
             <box-content>
-                <div class="scroll">
-                    {#each toggled_income as income}
-                        <Income {income} category={get_category(income.category)} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
-                    {/each}
-                    <ShowMoreButton link={"/?income="+(data.income_loaded+50)} />
-                </div>
+                {#each toggled_income as income}
+                    <Income {income} category={get_category(income.category)} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
+                {/each}
+                <ShowMoreButton link={"/?income="+(data.income_loaded+50)} />
             </box-content>
         </labeled-box>
+
         <labeled-box id="expense">
             <box-label><ExpenseTitleBar onClickAdd={addExpenseClickRaise}/></box-label>
             <box-content>
-                <div class="scroll">
-                    {#each toggled_expense as expense}
-                        <Expense {expense} category={get_category(expense.category)} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
-                    {/each}
-                    <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)} />
-                </div>
+                {#each toggled_expense as expense}
+                    <Expense {expense} category={get_category(expense.category)} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
+                {/each}
+                <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)} />
             </box-content>
         </labeled-box>
     </boxes>
@@ -476,13 +473,6 @@
         grid-row: 1 / 3;
     }
 
-    .scroll {
-        height: 250px;
-        overflow-y:scroll;
-        margin-top: 0px;
-        margin-bottom: 0px;
-    }
-    
     #search {
         /* background-color: green; */
         
@@ -512,6 +502,9 @@
     }
     
     labeled-box {
+        display: flex;
+        flex-direction: column;
+
         border: 2px solid gray;
         border-radius: 8px;
         background-color: #00000022;
@@ -523,6 +516,7 @@
         border: 2px solid gray;
         border-radius: 8px;
         background-color: #00000022;
+        user-select: none;
     }
 
     box-label {
@@ -536,6 +530,12 @@
         padding-left: 12px;
         padding-top: 12px;
         padding-bottom: 12px;
+    }
+
+    box-content {
+        flex-grow: 1;
+        min-height: 0;
+        overflow-y: auto;
     }
 
     boxes {
