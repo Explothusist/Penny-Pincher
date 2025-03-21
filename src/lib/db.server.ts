@@ -178,8 +178,8 @@ export class Income {
         const query = "SELECT id,amount,date,source FROM income WHERE date > ? AND date < ? "+condition+" ORDER BY date DESC;";
         const rows: any[] = db.prepare(query).all(minDate, maxDate, ...params);
 
-        console.log(query);
-        console.log(rows);
+        // console.log(query);
+        // console.log(rows);
 
         if (rows.length === 0) {
             return [Income.errorCode()];
@@ -236,15 +236,21 @@ export class Income {
     }
 
     static fromCSV(shard: string) {
-        console.log(shard);
         let bits = shard.split(",");
-        console.log(bits);
         return new Income(
             0,
             Number(bits[0]),
-            Number(bits[1]),
-            Number(bits[2])
+            Number(bits[2]),
+            Number(bits[1])
         )
+    }
+
+    asCSV() {
+        // $$,Cat,Date,I/E
+        if (this.id !== -1) {
+            return this.amountUsd+","+this.date+","+this.category+",0\r\n";
+        }
+        return "";
     }
 
     toJSON() {
@@ -324,17 +330,38 @@ export class Expense {
 
     static fromCSV(shard: string) {
         let bits = shard.split(",");
-        return new Income(
+        return new Expense(
             0,
             Number(bits[0]),
-            Number(bits[1]),
-            Number(bits[2])
+            Number(bits[2]),
+            Number(bits[1])
         )
+    }
+
+    asCSV() {
+        // $$,Date,Cat,I/E
+        if (this.id !== -1) {
+            return this.amountUsd+","+this.date+","+this.category+",1\r\n";
+        }
+        return "";
     }
 
     toJSON() {
         const out = {...this};
         return out;
+    }
+}
+
+export function adaptiveFromCSV(shard: string) {
+    let bits = shard.split(",");
+    // console.log(bits);
+    // console.log(Number(bits[3]));
+    if (Number(bits[3]) === 0) {
+        return Income.fromCSV(shard);
+    }else if (Number(bits[3]) === 1) {
+        return Expense.fromCSV(shard);
+    }else {
+        return Income.fromCSV(shard);
     }
 }
 

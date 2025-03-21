@@ -3,14 +3,16 @@
     
     export let form, data;
 
-    let IncomeToggle: HTMLElement;
-    let ExpenseToggle: HTMLElement;
-
-    function flip_income() {
-        IncomeToggle.checked = !IncomeToggle.checked;
+    function getCategoryByID(id: number) {
+        return data.categories.map((category) => category.id).indexOf(id);
     };
-    function flip_expense() {
-        ExpenseToggle.checked = !ExpenseToggle.checked;
+
+    let nonzero_categories = data.categories.filter((category) => (category.id !== 0));
+
+    function getCategoryIds() {
+        let string = "";
+        nonzero_categories.forEach((category) => string += category.id+", ");
+        return string;
     };
 
     onMount(() => {
@@ -23,15 +25,23 @@
 <div id="mainstuff">
     <h1>Select a CSV file.</h1>
     <form id="importCSV" enctype="multipart/form-data" action="?/importCSV" method="POST">
+        <p>Uses format: Amount(USD), Date(Unix Time), (Category(ID Number Optional), Expense/Income(1/0 Optional))</p>
         <content>
-            <link-box>
-                <input type="checkbox" form="importCSV" name="asIncome" id="asIncome" checked bind:this={IncomeToggle} on:change={flip_expense} >
-                <label for="asIncome">As Income</label>
-            </link-box>
-            <link-box>
-                <input type="checkbox" form="importCSV" name="asExpense" id="asExpense" bind:this={ExpenseToggle} on:change={flip_income} >
-                <label for="asExpense">As Expense</label>
-            </link-box>
+            <label for="importType">Import as:</label>
+            <select form="importCSV" name="importType" id="importType">
+                <option value=1>As Income</option>
+                <option value=2>As Expense</option>
+                <option value=3>As Indicated (Penny Pincher exports only)</option>
+            </select>
+        </content>
+        <content>
+            <label for="importCategory">Into Category:</label>
+            <select form="importCSV" name="importCategory" id="importCategory">
+                {#each nonzero_categories as category}
+                    <option value={category.id}>All as {category.name}</option>
+                {/each}
+                <option value=-1>As Indicated (Penny Pincher exports only)</option>
+            </select>
         </content>
         <content>
             <link-box>

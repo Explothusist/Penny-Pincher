@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Logo from "$lib/components/Logo.svelte";
     import LinkButton from "$lib/components/LinkButton.svelte";
     import { onMount } from "svelte";
     import Income from "$lib/components/Income.svelte";
@@ -134,7 +133,7 @@
         document.body.appendChild(addExpenseModalBind);
         document.body.appendChild(editExpenseModalBind);
         document.body.appendChild(deleteExpenseModalBind);
-        if(data.message){
+        if (data.message) {
             alert(data.message);
         }
     });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
@@ -546,13 +545,6 @@
         padding-bottom: 12px;
     }
 
-    box-content {
-        /* padding: 12px; */
-        /* padding: 0px; */
-        /* padding-left: 12px; */
-
-        /* padding-bottom: 0px; */
-    }
     boxes {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -612,10 +604,6 @@
         text-align: center;
         padding: 12px;
         font-weight: bold;
-    }
-
-    modal-label.error {
-
     }
 
     content {

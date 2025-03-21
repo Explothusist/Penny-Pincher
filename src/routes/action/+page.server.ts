@@ -1,5 +1,6 @@
+import { writeFile } from 'node:fs/promises';
 import { Income, Expense, Balance, Category } from '$lib/db.server';
-import { redirect } from '@sveltejs/kit';
+import { json, redirect } from '@sveltejs/kit';
 import Database from 'better-sqlite3';
 const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
@@ -74,6 +75,42 @@ export const actions = {
 
         if (Number(toDo) === -3) {
             // Export CSV
+            let csv_file = "";
+            if (Boolean(incomeToggle)) {
+                for (let i = 0; i < categoryToggles.length; i++) {
+                    if (categoryToggles[i]) {
+                        let temp_condition = "(source = ?"+condition+")";
+                        let temp_run_params = [Number(category_ids[i]), ...run_params];
+                        let incomes = Income.givenParams(temp_condition, temp_run_params);
+
+                        if (incomes.length > 0) {
+                            incomes.forEach((income) => csv_file += income.asCSV());
+                        }
+                    }
+                }
+            }
+            if (Boolean(expenseToggle)) {
+                for (let i = 0; i < categoryToggles.length; i++) {
+                    if (categoryToggles[i]) {
+                        let temp_condition = "(source = ?"+condition+")";
+                        let temp_run_params = [Number(category_ids[i]), ...run_params];
+                        let expenses = Expense.givenParams(temp_condition, temp_run_params);
+
+                        if (expenses.length > 0) {
+                            expenses.forEach((expense) => csv_file += expense.asCSV());
+                        }
+                    }
+                }
+            }
+            if (csv_file !== "") {
+                csv_file = csv_file.slice(0, -4);
+            }
+            try {
+                await writeFile("Penny_Pincher_export_"+String(new Date(Date.now()).toISOString().slice(0, 10))+".csv", csv_file, "utf-8");
+                console.log("Success");
+            } catch (error) {
+                console.log("Failure: "+error.message);
+            }
         }else if (Number(toDo) === -2) {
             // Print Table / Export PDF
         }else if (Number(toDo) === -1) {
