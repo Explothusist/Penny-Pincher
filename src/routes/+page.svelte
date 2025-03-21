@@ -103,7 +103,7 @@
                 return data.categories[i];
             }
         }
-        console.log(id);
+        // console.log(id);
     }
     function get_category_index(id: number) {
         for (let i = 0; i < data.categories.length; i++) {

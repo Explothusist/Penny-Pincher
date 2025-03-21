@@ -95,6 +95,8 @@ export class Income {
     amountUsd: number;
     category: number;
     date: number;
+    isIncome: boolean;
+    isExpense: boolean;
 
     constructor(
         id: number,
@@ -106,6 +108,8 @@ export class Income {
         this.amountUsd = amountUsd;
         this.category = category;
         this.date = date;
+        this.isIncome = true;
+        this.isExpense = false;
     }
 
     static errorCode() {
@@ -265,6 +269,8 @@ export class Expense {
     amountUsd: number;
     category: number;
     date: number;
+    isIncome: boolean;
+    isExpense: boolean;
 
     constructor(
         id: number,
@@ -276,6 +282,8 @@ export class Expense {
         this.amountUsd = amountUsd;
         this.category =  category;
         this.date = date;
+        this.isIncome = false;
+        this.isExpense = true;
     }
 
     static errorCode() {
