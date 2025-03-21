@@ -140,31 +140,34 @@
 </script>
 
 <div id="mainstuff">
-    <balance>
-        <Balance balance={data.currentBalance}/>
-    </balance>
-    <link-boxes class="links">
-        <link-box id="search">
-            <LinkButton text="Search" link="/search" />
-        </link-box>
-        <link-box id="graphs">
-            <LinkButton link="/graphs" text="Graphs" />
-        </link-box>
-        <link-box id="categories">
-            <LinkButton link="/categories" text="Categories" />
-        </link-box>
-        <link-box id="actions">
-            <LinkButton link="/action" text="Actions" />
-        </link-box>
-        <link-box id="import">
-            <LinkButton link="/import" text="Import" />
-        </link-box>
-    </link-boxes>
-    <link-boxes class="links">
-        {#each nonzero_categories as category}
-            <CategoryCheckbox category={category} toggle_category={toggle_category} />
-        {/each}
-    </link-boxes>
+    <m-center>
+        <balance>
+            <Balance balance={data.currentBalance}/>
+        </balance>
+        <link-boxes class="links">
+            <link-box id="search">
+                <LinkButton text="Search" link="/search" />
+            </link-box>
+            <link-box id="graphs">
+                <LinkButton link="/graphs" text="Graphs" />
+            </link-box>
+            <link-box id="categories">
+                <LinkButton link="/categories" text="Categories" />
+            </link-box>
+            <link-box id="actions">
+                <LinkButton link="/action" text="Actions" />
+            </link-box>
+            <link-box id="import">
+                <LinkButton link="/import" text="Import" />
+            </link-box>
+        </link-boxes>
+        <link-boxes class="links">
+            {#each nonzero_categories as category}
+                <CategoryCheckbox category={category} toggle_category={toggle_category} />
+            {/each}
+        </link-boxes>
+    </m-center>
+
     <boxes>
         <labeled-box id="income">
             <box-label><IncomeTitleBar onClickAdd={addIncomeClickRaise}/></box-label>
@@ -439,15 +442,11 @@
         -1px 1px 0 #000,
         1px 1px 0 #000;
     }
+
     .links {
         background-color: white;
         width: 80%;
-        margin-left: 10%;
-        margin-top: 28px;
-        margin-bottom: 28px;
-        padding-left: 30px;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        padding: 12px;
     }
     #entries {
         background-color: blue;
@@ -486,37 +485,31 @@
     
     #search {
         /* background-color: green; */
-        margin: 10px;
         
         grid-column: 1;
         grid-row: 1;
     }
     #graphs {
         /* background-color: yellow; */
-        margin: 10px;
         
         grid-column: 2;
         grid-row: 1;
     }
     #categories {
         /* background-color: yellow; */
-        margin: 10px;
         
         grid-column: 3;
         grid-row: 1;
     }
     #actions {
-        margin: 10px;
         grid-column: 4;
         grid-row: 1;
     }
+
     #import {
-        margin: 10px;
         grid-column: 5;
         grid-row: 1;
     }
-
-
     
     labeled-box {
         border: 2px solid gray;
@@ -525,11 +518,11 @@
         margin-top: 6px;
         height: 293px;
     }
+
     link-box {
         border: 2px solid gray;
         border-radius: 8px;
         background-color: #00000022;
-        margin-top: 6px;
     }
 
     box-label {
@@ -554,6 +547,7 @@
         flex-grow: 1;
         margin-bottom: 12px;
     }
+
     link-boxes {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -648,5 +642,11 @@
     faint {
         opacity: 0.7;
         font-size: 16px;
+    }
+
+    m-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 </style>
