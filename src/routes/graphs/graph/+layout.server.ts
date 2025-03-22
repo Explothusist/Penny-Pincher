@@ -23,6 +23,8 @@ export function load(  { cookies, url }) {
     const recentToggle = Boolean((url.searchParams.get("recent") || "false") === "true");
     const minRecent = Number(url.searchParams.get("minRecent")) || 0;
     const maxRecent = Number(url.searchParams.get("maxRecent")) || 50;
+ 
+    const numBoxes = Number(url.searchParams.get("numBoxes")) || 12;
     
     const category_ids_raw = url.searchParams.get("catId") || "";
     const category_toggles_raw = url.searchParams.get("catTgl") || "";
@@ -39,6 +41,7 @@ export function load(  { cookies, url }) {
         minRecent: minRecent,
         maxRecent: maxRecent,
         category_ids: category_ids,
-        category_toggles: category_toggles
+        category_toggles: category_toggles,
+        numBoxes: numBoxes
     };
 };

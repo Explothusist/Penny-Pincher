@@ -16,6 +16,12 @@
 
     data.recentIncome.forEach((income) => boxes[Math.floor(((income.date*1000)-base)/increment)].y += income.amountUsd);
 
+    let old_boxes = [...boxes];
+    // Average over last four intervals
+    for (let i = 0; i < number_of_boxes; i++) {
+        boxes[i].y = (old_boxes[i].y+old_boxes[Math.max(0, i-1)].y+old_boxes[Math.max(0, i-2)].y+old_boxes[Math.max(0, i-3)].y)/4;
+    }
+
     onMount(() => {
         if(data.message){
             alert(data.message);
@@ -27,7 +33,7 @@
             new Chart(
                 "chart_canvas",
                 {
-                    type: "bar",
+                    type: "line",
                     data: {
                         labels: boxes.map((box) => box.x),
                         datasets: [
@@ -35,8 +41,8 @@
                                 label: 'Income',
                                 data: boxes,
                                 borderColor: "rgb(0,0,255)",
-                                backgroundColor: "rgb(0,0,255)",
-                                barPercentage: 2.0
+                                backgroundColor: "rgba(0,0,255, 0.3)",
+                                fill: "start"
                             }
                         ]
                     },
@@ -68,7 +74,7 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Recent Income - Histogram</h1>
+    <h1>Recent Income - Average</h1>
     <chart-container>
         <canvas id="chart_canvas"></canvas>
     </chart-container>

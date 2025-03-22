@@ -65,6 +65,10 @@
                 <label for="minRecent"> To </label>
                 <input type="number" form="actionStuff" name="maxRecent" value={data.maxRecent} >
             </content>
+            <content>
+                <label for="numBoxes">Number of Intervals:</label>
+                <input type="number" form="actionStuff" name="numBoxes" id="numBoxes" value={data.numBoxes} >
+            </content>
         </content>
         <input type="submit" class="big-button" value="Apply">
     </form>

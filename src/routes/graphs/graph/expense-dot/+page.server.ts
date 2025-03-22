@@ -22,8 +22,6 @@ export function load(  { cookies, url }) {
     const minRecent = Number(url.searchParams.get("minRecent")) || 0;
     const maxRecent = Number(url.searchParams.get("maxRecent")) || 50;
     
-    const numBoxes = Number(url.searchParams.get("numBoxes")) || 12;
-    
     const category_ids_raw = url.searchParams.get("catId") || "";
     const category_toggles_raw = url.searchParams.get("catTgl") || "";
 
@@ -49,16 +47,16 @@ export function load(  { cookies, url }) {
         condition += ")";
     }
 
-    let recentIncome: Income[];
+    let recentExpense: Expense[];
 
     if (dateToggle) {
-        recentIncome = Income.allInDateRangeGivenParams(minDate, maxDate, condition, params).map(x => x.toJSON());
+        recentExpense = Expense.allInDateRangeGivenParams(minDate, maxDate, condition, params).map(x => x.toJSON());
     }else {
-        recentIncome = Income.allInRecentRangeGivenParams(minRecent, maxRecent, condition, params).map(x => x.toJSON());
+        recentExpense = Expense.allInRecentRangeGivenParams(minRecent, maxRecent, condition, params).map(x => x.toJSON());
     }
 
     return {
-        recentIncome: recentIncome,
+        recentExpense: recentExpense,
         dateToggle: dateToggle,
         minDate: minDate,
         maxDate: maxDate,
@@ -66,8 +64,7 @@ export function load(  { cookies, url }) {
         minRecent: minRecent,
         maxRecent: maxRecent,
         category_toggles: category_toggles,
-        category_ids: category_ids,
-        numBoxes: numBoxes
+        category_ids: category_ids
     };
 };
 
@@ -83,7 +80,6 @@ export const actions = {
         const recentToggle = data.get("recentToggle") as String;
         const minRecent = data.get("minRecent") as String;
         const maxRecent = data.get("maxRecent") as String;
-        const numBoxes = data.get("numBoxes") as String;
         
         const one_day = 86400;
         const minDateFormatted = new Date(String(minDate)).getTime()/1000;
@@ -106,9 +102,9 @@ export const actions = {
         // }
         link_sett += "date="+Boolean(dateToggle)+"&&recent="+Boolean(recentToggle)+"&&minDate="+minDateFormatted+"&&maxDate="+maxDateFormatted+"&&minRecent="+Number(minRecent)+"&&maxRecent="+Number(maxRecent);
 
-        link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids+"&&numBoxes="+Number(numBoxes);
+        link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids;
 
-        redirect(303, "/graphs/graph/income-hist"+link_sett);
+        redirect(303, "/graphs/graph/expense-dot"+link_sett);
     }
 
 };

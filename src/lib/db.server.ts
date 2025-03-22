@@ -308,6 +308,29 @@ export class Expense {
         });
     }
 
+    static allInRecentRangeGivenParams(minRecent: number, maxRecent: number, condition: string, params: number[]) {
+        if (condition !== "") {
+            condition = "WHERE "+condition;
+        }
+        const query = "SELECT id,amount,date,source FROM expense "+condition+" ORDER BY date DESC LIMIT ?;";
+        const rows: any[] = db.prepare(query).all(...params, maxRecent);
+
+        rows.splice(0, minRecent);
+
+        if (rows.length === 0) {
+            return [Expense.errorCode()];
+        }
+
+        return rows.map(function(row: any) {
+            return new Expense(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
     static ofCategory(id: number) {
         const query = "SELECT id,amount,date,source FROM expense WHERE source = ? ORDER BY date DESC;";
         const rows: any[] = db.prepare(query).all(id);
@@ -325,6 +348,30 @@ export class Expense {
     static givenParams(condition: string, run_params: number[]) {
         const query = "SELECT id,amount,date,source FROM expense WHERE "+condition+" ORDER BY date DESC;";
         const rows: any[] = db.prepare(query).all(...run_params);
+
+        return rows.map(function(row: any) {
+            return new Expense(
+                row.id,
+                row.amount,
+                row.source,
+                row.date
+            );
+        });
+    }
+
+    static allInDateRangeGivenParams(minDate: number, maxDate: number, condition: string, params: number[]) {
+        if (condition !== "") {
+            condition = "AND ("+condition+")"
+        }
+        const query = "SELECT id,amount,date,source FROM expense WHERE date > ? AND date < ? "+condition+" ORDER BY date DESC;";
+        const rows: any[] = db.prepare(query).all(minDate, maxDate, ...params);
+
+        // console.log(query);
+        // console.log(rows);
+
+        if (rows.length === 0) {
+            return [Expense.errorCode()];
+        }
 
         return rows.map(function(row: any) {
             return new Expense(
