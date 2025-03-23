@@ -3,14 +3,14 @@
     import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
     import Logo from "$lib/components/Logo.svelte";
     import { onMount } from "svelte";
-    import type { Income } from '$lib/db.server.js';
+    import type { Expense } from '$lib/db.server.js';
     export let form, data;
     
     let minDate = data.minDate;
     let maxDate = data.maxDate;
     if (data.recentToggle) {
-        minDate = data.recentIncome[data.recentIncome.length-1].date;
-        maxDate = data.recentIncome[0].date;
+        minDate = data.recentExpense[data.recentExpense.length-1].date;
+        maxDate = data.recentExpense[0].date;
     }
 
     let number_of_boxes = data.numBoxes;
@@ -21,7 +21,7 @@
         boxes.push({x: base + (increment * i), y: 0});
     }
 
-    data.recentIncome.forEach((income) => boxes[Math.floor(((income.date*1000)-base)/increment)].y += income.amountUsd);
+    data.recentExpense.forEach((expense) => boxes[Math.floor(((expense.date*1000)-base)/increment)].y += expense.amountUsd);
 
     onMount(() => {
         if(data.message){
@@ -39,7 +39,7 @@
                         labels: boxes.map((box) => box.x),
                         datasets: [
                             {
-                                label: 'Income',
+                                label: 'Expense',
                                 data: boxes,
                                 borderColor: "rgb(0,0,255)",
                                 backgroundColor: "rgb(0,0,255)",
@@ -75,7 +75,7 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Recent Income - Histogram</h1>
+    <h1>Recent Expense - Histogram</h1>
     <chart-container>
         <canvas id="chart_canvas"></canvas>
     </chart-container>

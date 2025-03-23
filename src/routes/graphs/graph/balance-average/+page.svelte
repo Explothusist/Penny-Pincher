@@ -3,14 +3,30 @@
     import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
     import Logo from "$lib/components/Logo.svelte";
     import { onMount } from "svelte";
-    import type { Income } from '$lib/db.server.js';
+    import type { Expense } from '$lib/db.server.js';
     export let form, data;
-    
+
+    let calc_balance = data.currBalance.amountUsd;
+    let data_points: {x: number, y: number}[] = [];
+
+    data.recentOccurance.sort((a, b) => b.date-a.date);
+
+    for (let occurance of data.recentOccurance) {
+        data_points.push({x: occurance.date * 1000, y: calc_balance});
+        if (occurance.isIncome) {
+            calc_balance -= occurance.amountUsd;
+        }else {
+            calc_balance += occurance.amountUsd;
+        }
+    }
+
+    console.log(data_points);
+
     let minDate = data.minDate;
     let maxDate = data.maxDate;
     if (data.recentToggle) {
-        minDate = data.recentIncome[data.recentIncome.length-1].date;
-        maxDate = data.recentIncome[0].date;
+        minDate = data.recentOccurance[data.recentOccurance.length-1].date;
+        maxDate = data.recentOccurance[0].date;
     }
 
     let number_of_boxes = data.numBoxes;
@@ -21,7 +37,7 @@
         boxes.push({x: base + (increment * i), y: 0});
     }
 
-    data.recentIncome.forEach((income) => boxes[Math.floor(((income.date*1000)-base)/increment)].y += income.amountUsd);
+    data_points.forEach((point) => boxes[Math.floor(((point.x)-base)/increment)].y += point.y);
 
     onMount(() => {
         if(data.message){
@@ -34,18 +50,16 @@
             new Chart(
                 "chart_canvas",
                 {
-                    type: "bar",
+                    type: "line",
                     data: {
-                        labels: boxes.map((box) => box.x),
-                        datasets: [
-                            {
-                                label: 'Income',
-                                data: boxes,
-                                borderColor: "rgb(0,0,255)",
-                                backgroundColor: "rgb(0,0,255)",
-                                barPercentage: 2.0
-                            }
-                        ]
+                        datasets: [{
+                            pointRadius: 4,
+                            pointBackgroundColor: "rgb(0,0,255)",
+                            data: xyValues,
+                            borderColor: "rgb(0,0,255)",
+                            backgroundColor: "rgba(0,0,255, 0.3)",
+                            fill: "start"
+                        }]
                     },
                     options: {
                         plugins: {
@@ -64,7 +78,7 @@
                                 type: "time"
                             },
                             y: {
-                                min: 0
+                                
                             }
                         }
                     }
@@ -75,7 +89,7 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Recent Income - Histogram</h1>
+    <h1>Recent Balance - Average</h1>
     <chart-container>
         <canvas id="chart_canvas"></canvas>
     </chart-container>

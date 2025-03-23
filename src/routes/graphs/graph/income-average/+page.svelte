@@ -5,12 +5,19 @@
     import { onMount } from "svelte";
     import type { Income } from '$lib/db.server.js';
     export let form, data;
+    
+    let minDate = data.minDate;
+    let maxDate = data.maxDate;
+    if (data.recentToggle) {
+        minDate = data.recentIncome[data.recentIncome.length-1].date;
+        maxDate = data.recentIncome[0].date;
+    }
 
     let number_of_boxes = data.numBoxes;
-    let base = data.minDate*1000;
-    let increment = ((data.maxDate-data.minDate)/number_of_boxes) * 1000;
+    let base = minDate*1000;
+    let increment = ((maxDate-minDate)/number_of_boxes) * 1000;
     let boxes = [];
-    for (let i = 0; i < number_of_boxes; i++) {
+    for (let i = 0; i < number_of_boxes+1; i++) {
         boxes.push({x: base + (increment * i), y: 0});
     }
 
@@ -56,8 +63,8 @@
                             x: (data.dateToggle) ?
                             {
                                 type: "time",
-                                min: data.minDate*1000 - increment/2,
-                                max: data.maxDate*1000 - increment/2
+                                min: data.minDate*1000,
+                                max: data.maxDate*1000
                             } :
                             {
                                 type: "time"

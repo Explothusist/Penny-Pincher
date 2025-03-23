@@ -108,7 +108,7 @@ export const actions = {
 
         link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids+"&&numBoxes="+Number(numBoxes);
 
-        redirect(303, "/graphs/graph/income-hist"+link_sett);
+        redirect(303, "/graphs/graph/income-average"+link_sett);
     }
 
 };

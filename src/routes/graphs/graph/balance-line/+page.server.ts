@@ -22,49 +22,52 @@ export function load(  { cookies, url }) {
     const minRecent = Number(url.searchParams.get("minRecent")) || 0;
     const maxRecent = Number(url.searchParams.get("maxRecent")) || 50;
     
-    const category_ids_raw = url.searchParams.get("catId") || "";
-    const category_toggles_raw = url.searchParams.get("catTgl") || "";
+    // const category_ids_raw = url.searchParams.get("catId") || "";
+    // const category_toggles_raw = url.searchParams.get("catTgl") || "";
 
-    const category_ids = category_ids_raw.split(",").map((id) => Number(id));
-    const category_toggles = category_toggles_raw.split(",").map((tgl) => Boolean(tgl === "true"));
+    // const category_ids = category_ids_raw.split(",").map((id) => Number(id));
+    // const category_toggles = category_toggles_raw.split(",").map((tgl) => Boolean(tgl === "true"));
 
     let condition = "";
-    let params = [];
-    if (category_ids.length > 0 && category_toggles.length > 0 && category_ids[0] !== 0) {
-        condition += "(";
-        for (let i = 0; i < category_toggles.length; i++) {
-            if (category_toggles[i]) {
-                if (condition !== "(") {
-                    condition += " OR ";
-                }
-                condition += "source = ?";
-                params.push(category_ids[i]);
-            }
-        }
-        if (condition === "(") {
-            condition += "1 = 0";
-        }
-        condition += ")";
-    }
+    let params: number[] = [];
+    // if (category_ids.length > 0 && category_toggles.length > 0 && category_ids[0] !== 0) {
+    //     condition += "(";
+    //     for (let i = 0; i < category_toggles.length; i++) {
+    //         if (category_toggles[i]) {
+    //             if (condition !== "(") {
+    //                 condition += " OR ";
+    //             }
+    //             condition += "source = ?";
+    //             params.push(category_ids[i]);
+    //         }
+    //     }
+    //     if (condition === "(") {
+    //         condition += "1 = 0";
+    //     }
+    //     condition += ")";
+    // }
 
-    let recentExpense: Expense[];
+    let recentOccurance: (Expense | Income)[] = [];
 
     if (dateToggle) {
-        recentExpense = Expense.allInDateRangeGivenParams(minDate, maxDate, condition, params).map(x => x.toJSON());
+        Income.allInDateRangeGivenParams(minDate, maxDate, condition, params).map(x => x.toJSON()).forEach((income) => recentOccurance.push(income));
+        Expense.allInDateRangeGivenParams(minDate, maxDate, condition, params).map(x => x.toJSON()).forEach((expense) => recentOccurance.push(expense));
     }else {
-        recentExpense = Expense.allInRecentRangeGivenParams(minRecent, maxRecent, condition, params).map(x => x.toJSON());
+        Income.allInRecentRangeGivenParams(minRecent, maxRecent, condition, params).map(x => x.toJSON()).forEach((income) => recentOccurance.push(income));
+        Expense.allInRecentRangeGivenParams(minRecent, maxRecent, condition, params).map(x => x.toJSON()).forEach((expense) => recentOccurance.push(expense));
     }
 
+    const currBalance = Balance.current().toJSON();
+
     return {
-        recentExpense: recentExpense,
+        recentOccurance: recentOccurance,
         dateToggle: dateToggle,
         minDate: minDate,
         maxDate: maxDate,
         recentToggle: recentToggle,
         minRecent: minRecent,
         maxRecent: maxRecent,
-        category_toggles: category_toggles,
-        category_ids: category_ids
+        currBalance: currBalance
     };
 };
 
@@ -105,7 +108,7 @@ export const actions = {
 
         link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids+"&&numBoxes="+Number(numBoxes);
 
-        redirect(303, "/graphs/graph/expense-dot"+link_sett);
+        redirect(303, "/graphs/graph/balance-line"+link_sett);
     }
 
 };

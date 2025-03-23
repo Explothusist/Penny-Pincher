@@ -3,8 +3,24 @@
     import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
     import Logo from "$lib/components/Logo.svelte";
     import { onMount } from "svelte";
-    import type { Income } from '$lib/db.server.js';
+    import type { Expense } from '$lib/db.server.js';
     export let form, data;
+
+    let calc_balance = data.currBalance.amountUsd;
+    let data_points: {}[] = [];
+
+    data.recentOccurance.sort((a, b) => b.date-a.date);
+
+    for (let occurance of data.recentOccurance) {
+        data_points.push({x: occurance.date * 1000, y: calc_balance});
+        if (occurance.isIncome) {
+            calc_balance -= occurance.amountUsd;
+        }else {
+            calc_balance += occurance.amountUsd;
+        }
+    }
+
+    // console.log(data_points);
 
     onMount(() => {
         if(data.message){
@@ -12,12 +28,12 @@
         }
         
         (async function() {
-            const xyValues = data.recentIncome.map((function(income: Income) { return{x: income.date*1000, y: income.amountUsd}; }));
+            const xyValues = data_points;
 
             new Chart(
                 "chart_canvas",
                 {
-                    type: "scatter",
+                    type: "line",
                     data: {
                         datasets: [{
                             pointRadius: 4,
@@ -42,7 +58,7 @@
                                 type: "time"
                             },
                             y: {
-                                min: 0
+                                
                             }
                         }
                     }
@@ -53,7 +69,7 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Recent Income - Dot</h1>
+    <h1>Recent Balance - Line</h1>
     <chart-container>
         <canvas id="chart_canvas"></canvas>
     </chart-container>

@@ -80,6 +80,7 @@ export const actions = {
         const recentToggle = data.get("recentToggle") as String;
         const minRecent = data.get("minRecent") as String;
         const maxRecent = data.get("maxRecent") as String;
+        const numBoxes = data.get("numBoxes") as String;
         
         const one_day = 86400;
         const minDateFormatted = new Date(String(minDate)).getTime()/1000;
@@ -102,7 +103,7 @@ export const actions = {
         // }
         link_sett += "date="+Boolean(dateToggle)+"&&recent="+Boolean(recentToggle)+"&&minDate="+minDateFormatted+"&&maxDate="+maxDateFormatted+"&&minRecent="+Number(minRecent)+"&&maxRecent="+Number(maxRecent);
 
-        link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids;
+        link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids+"&&numBoxes="+Number(numBoxes);
 
         redirect(303, "/graphs/graph/income-dot"+link_sett);
     }

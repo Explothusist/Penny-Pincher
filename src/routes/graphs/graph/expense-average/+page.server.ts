@@ -22,6 +22,8 @@ export function load(  { cookies, url }) {
     const minRecent = Number(url.searchParams.get("minRecent")) || 0;
     const maxRecent = Number(url.searchParams.get("maxRecent")) || 50;
     
+    const numBoxes = Number(url.searchParams.get("numBoxes")) || 12;
+    
     const category_ids_raw = url.searchParams.get("catId") || "";
     const category_toggles_raw = url.searchParams.get("catTgl") || "";
 
@@ -64,7 +66,8 @@ export function load(  { cookies, url }) {
         minRecent: minRecent,
         maxRecent: maxRecent,
         category_toggles: category_toggles,
-        category_ids: category_ids
+        category_ids: category_ids,
+        numBoxes: numBoxes
     };
 };
 
@@ -105,7 +108,7 @@ export const actions = {
 
         link_sett += "&&catTgl="+categoryToggles+"&&catId="+category_ids+"&&numBoxes="+Number(numBoxes);
 
-        redirect(303, "/graphs/graph/expense-dot"+link_sett);
+        redirect(303, "/graphs/graph/expense-average"+link_sett);
     }
 
 };
