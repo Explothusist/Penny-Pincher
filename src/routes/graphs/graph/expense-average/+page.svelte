@@ -25,8 +25,8 @@
 
     let old_boxes = [...boxes];
     // Average over last four intervals
-    for (let i = 0; i < number_of_boxes; i++) {
-        boxes[i].y = (old_boxes[i].y+old_boxes[Math.max(0, i-1)].y+old_boxes[Math.max(0, i-2)].y+old_boxes[Math.max(0, i-3)].y)/4;
+    for (let i = 0; i < number_of_boxes+1; i++) {
+        boxes[i].y = Math.round((old_boxes[i].y+old_boxes[Math.max(0, i-1)].y+old_boxes[Math.max(0, i-2)].y+old_boxes[Math.max(0, i-3)].y)/4);
     }
 
     onMount(() => {

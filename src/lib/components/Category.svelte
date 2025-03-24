@@ -7,7 +7,7 @@
     export let category;
     export let onClickDelete = function(category_id: number) {};
     export let onClickEdit = function(category_id: number) {};
-    export let onClickAct = function(category_id: number) {};
+    // export let onClickAct = function(category_id: number) {};
     export let show_edit_delete = true;
 </script>
 
@@ -15,9 +15,9 @@
     <category>
         <title>{category.name}</title>
         {#if show_edit_delete}
-            <icon on:click={() => onClickAct(category.id)}>
+            <!-- <icon on:click={() => onClickAct(category.id)}>
                 <IconAct />
-            </icon>
+            </icon> -->
             <icon on:click={() => onClickEdit(category.id)}>
                 <IconEdit />
             </icon>

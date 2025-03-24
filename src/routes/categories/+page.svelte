@@ -248,15 +248,8 @@
         pointer-events: none;
     }
 
-    .confirm_modal {
-        width: 35%;
-        height: 42%;
-    }
-
     editor {
         background-color: white;
-        width: 40%;
-        height: 80%;
         border-radius: 16px;
     }
 
@@ -305,7 +298,7 @@
         cursor: pointer;
         color: white;
         font-weight: bold;
-        width: 95%;
+        margin-top: 0px;
     }
     
     block-cont {
@@ -315,5 +308,10 @@
     faint {
         opacity: 0.7;
         font-size: 16px;
+    }
+
+    editor > form {
+        display: flex;
+        flex-direction: column;
     }
 </style>

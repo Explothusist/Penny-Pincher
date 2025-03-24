@@ -635,14 +635,10 @@
     }
 
     .confirm_modal {
-        width: 35%;
-        height: 42%;
     }
 
     editor {
         background-color: white;
-        width: 40%;
-        height: 80%;
         border-radius: 16px;
     }
 
@@ -683,11 +679,11 @@
         align-items: center;
         padding: 12px;
         margin: 12px;
+        margin-top: 0px;
         border-radius: 8px;
         cursor: pointer;
         color: white;
         font-weight: bold;
-        width: 95%;
     }
     
     block-cont {
@@ -728,5 +724,10 @@
 
     #chart_canvas {
         max-width: 100%;
+    }
+
+    editor > form {
+        display: flex;
+        flex-direction: column;
     }
 </style>
