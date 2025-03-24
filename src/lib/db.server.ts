@@ -4,57 +4,6 @@ const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
 
 
-interface SQLClause {
-    text: string;
-    values: any[];
-}
-
-// // Balance List
-// export class Balance {
-//     // Note: keep these as basic JS objects so serialization is ezpz
-//     id: number;
-//     amountUsd: number;
-//     date: number;
-
-//     constructor(
-//         id: number,
-//         amountUsd: number,
-//         date: number,
-//     ) {
-//         this.id = id;
-//         this.amountUsd = amountUsd;
-//         this.date = date;
-//     }
-
-//     static recent(count: number = 25) {
-//         const query = "SELECT id,amount,date FROM balance ORDER BY date DESC LIMIT ?;";
-//         const rows: any[] = db.prepare(query).all([count]);
-
-//         return rows.map(function(row: any) {
-//             return new Balance(
-//                 row.id,
-//                 row.amount_usd,
-//                 row.date
-//             );
-//         });
-//     }
-//     static most_recent() {
-//         const query = "SELECT id,amount,date FROM balance ORDER BY date DESC LIMIT ?;";
-//         const rows: any[] = db.prepare(query).all([1]);
-
-//         return new Balance(
-//             rows[0].id,
-//             rows[0].amount,
-//             rows[0].date
-//         );
-//     }
-
-//     toJSON() {
-//         const out = {...this};
-//         return out;
-//     }
-// }
-
 // Balance Single Value
 export class Balance {
     // Note: keep these as basic JS objects so serialization is ezpz
@@ -73,13 +22,13 @@ export class Balance {
     }
 
     static current() {
-        const query = "SELECT id,amount,date FROM balance ORDER BY date DESC LIMIT ?;";
-        const rows: any[] = db.prepare(query).all([1]);
+        const query = "SELECT id,amount,date FROM balance ORDER BY date DESC LIMIT 1;";
+        const data: any = db.prepare(query).get();
 
         return new Balance(
-            rows[0].id,
-            rows[0].amount,
-            rows[0].date
+            data.id,
+            data.amount,
+            data.date
         );
     }
 
