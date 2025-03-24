@@ -7,6 +7,7 @@ import {
 } from "$lib/db.server";
 import { redirect } from "@sveltejs/kit";
 import Database from "better-sqlite3";
+
 const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
 

@@ -15,6 +15,7 @@
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/better-sqlite3": "^7.6.12",
 		"better-sqlite3": "^9.4.3",
 		"chart.js": "^4.0.0",
 		"chartjs-adapter-dayjs-4": "^1.0.0",
