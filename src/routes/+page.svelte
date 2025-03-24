@@ -8,6 +8,8 @@
     import ExpenseTitleBar from "$lib/components/ExpenseTitleBar.svelte";
     import ShowMoreButton from "$lib/components/ShowMoreButton.svelte";
     import CategoryCheckbox from "$lib/components/CategoryCheckbox.svelte";
+    import Chart from 'chart.js/auto';
+    import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
     
     export let form, data;
 
@@ -126,6 +128,33 @@
         get_toggled_income();
     }
 
+    let calc_balance = data.currentBalance.amountUsd;
+    let data_points: {x: number, y: number}[] = [];
+
+    data.recentOccurance.sort((a, b) => b.date-a.date);
+
+    for (let occurance of data.recentOccurance) {
+        data_points.push({x: occurance.date * 1000, y: calc_balance});
+        if (occurance.isIncome) {
+            calc_balance -= occurance.amountUsd;
+        } else {
+            calc_balance += occurance.amountUsd;
+        }
+    }
+
+    let minDate = data.minDate;
+    let maxDate = data.maxDate;
+
+    let number_of_boxes = data.numBoxes;
+    let base = minDate*1000;
+    let increment = ((maxDate-minDate)/number_of_boxes) * 1000;
+    let boxes = [];
+    for (let i = 0; i < number_of_boxes; i++) {
+        boxes.push({x: base + (increment * i), y: 0});
+    }
+
+    data_points.forEach((point) => boxes[Math.floor(((point.x)-base)/increment)].y += point.y);
+
     onMount(() => {
         document.body.appendChild(addIncomeModalBind);
         document.body.appendChild(editIncomeModalBind);
@@ -135,39 +164,66 @@
         document.body.appendChild(deleteExpenseModalBind);
         if (data.message) {
             alert(data.message);
-        }
+        }(async function() {
+            const xyValues = boxes;
+
+            new Chart(
+                "chart_canvas",
+                {
+                    type: "line",
+                    data: {
+                        datasets: [{
+                            pointRadius: 4,
+                            pointBackgroundColor: "rgb(0,0,255)",
+                            data: xyValues,
+                            borderColor: "rgb(0,0,255)",
+                            backgroundColor: "rgba(0,0,255, 0.3)",
+                            fill: "start"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: "time",
+                                min: data.minDate*1000 - increment/2,
+                                max: data.maxDate*1000 - increment/2
+                            },
+                            y: {
+                                
+                            }
+                        }
+                    }
+                }
+            );
+        })();
     });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
-<div id="mainstuff">
+<left-right>
     <m-center>
         <balance>
             <Balance balance={data.currentBalance}/>
         </balance>
-        <link-boxes class="links">
-            <link-box id="search">
-                <LinkButton text="Search" link="/search" />
-            </link-box>
-            <link-box id="graphs">
-                <LinkButton link="/graphs" text="Graphs" />
-            </link-box>
-            <link-box id="categories">
-                <LinkButton link="/categories" text="Categories" />
-            </link-box>
-            <link-box id="actions">
-                <LinkButton link="/action" text="Actions" />
-            </link-box>
-            <link-box id="import">
-                <LinkButton link="/import" text="Import" />
-            </link-box>
-        </link-boxes>
+
         <link-boxes class="links">
             {#each nonzero_categories as category}
                 <CategoryCheckbox category={category} toggle_category={toggle_category} />
             {/each}
-        </link-boxes>
+        </link-boxes> 
     </m-center>
 
+    <div id="wrapper">
+        <canvas id="chart_canvas"></canvas>
+    </div>
+</left-right>
+<div id="mainstuff">
     <boxes>
         <labeled-box id="income">
             <box-label><IncomeTitleBar onClickAdd={addIncomeClickRaise}/></box-label>
@@ -413,6 +469,7 @@
         /* margin-left: 10%; */
         margin: 5%;
         width: 90%;
+        margin-top: 0%;
         
         /* background-color: white;
         justify-self: center;
@@ -549,14 +606,12 @@
     }
 
     link-boxes {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         gap: 10px;
-        /* grid-auto-columns: minmax(100px, auto); */
-        grid-auto-rows: minmax(25px, auto);
         width: 100%;
         flex-grow: 1;
         margin-bottom: 12px;
+        overflow-y: auto;
+        min-height: 90px;
     }
     
     
@@ -648,5 +703,30 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-left: 3%;
+    }
+
+    left-right {
+        display: flex;
+        width: 100%;
+        /* overflow: hidden; */
+        margin-top: 2%;
+        /* margin-right: 4%; */
+    }
+
+    left-right > * {
+        flex: 1 1 0px;
+        width: 0;
+    }
+
+    #wrapper {
+        width: 100%;
+        /* margin: 15px; */
+        height: 270px;
+        margin-right: 5%;
+    }
+
+    #chart_canvas {
+        max-width: 100%;
     }
 </style>

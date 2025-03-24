@@ -14,7 +14,8 @@
 
     logo-container {
         display: flex;
-        color: #35bbd3;
+        /* color: #35bbd3; */
+        color: #ffffff;
         align-items: center;
         justify-content: center;
         height: 48px;

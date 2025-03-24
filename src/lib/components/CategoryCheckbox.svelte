@@ -20,6 +20,8 @@
 
 <style>
     label {
+        display: inline-block;
+        margin-right: 6px;
         border: 2px solid gray;
         border-radius: 8px;
         background-color: #00000022;

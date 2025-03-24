@@ -17,14 +17,33 @@ export function load(  { cookies, url }) {
     const recentIncome = Income.recent(income_to_load).map(x => x.toJSON());
     const recentExpense = Expense.recent(expense_to_load).map(x => x.toJSON());
     const categories = Category.get_all().map(x => x.toJSON());
+    
+
+    const one_day = 86400;
+    const one_week = one_day*7;
+    const one_month = one_day*30;
+    const one_year = one_day*365;
+
+    const minDate = (Date.now()/1000)-one_year;
+    const maxDate = Date.now()/1000;
+    const numBoxes = 12;
+
+    let recentOccurance: (Expense | Income)[] = [];
+
+    Income.allInDateRangeGivenParams(minDate, maxDate, "", []).map(x => x.toJSON()).forEach((income) => recentOccurance.push(income));
+    Expense.allInDateRangeGivenParams(minDate, maxDate, "", []).map(x => x.toJSON()).forEach((expense) => recentOccurance.push(expense));
 
     return {
+        recentOccurance: recentOccurance,
         currentBalance: currentBalance,
         recentIncome: recentIncome,
         recentExpense: recentExpense,
         income_loaded: income_to_load,
         expense_loaded: expense_to_load,
-        categories: categories
+        categories: categories,
+        minDate: minDate,
+        maxDate: maxDate,
+        numBoxes: numBoxes
     };
 };
 

@@ -10,14 +10,17 @@
             <Logo />
         </div>
 
-        <div id="about">
-            <TopbarButton text="About Us" link="/about" />
+        <div id="graphs">
+            <TopbarButton text="Graphs" link="/graphs" />
         </div>
-        <div id="login">
-            <TopbarButton text="Login" link="/login" />
+        <div id="categories">
+            <TopbarButton text="Categories" link="/categories" />
         </div>
-        <div id="register">
-            <TopbarButton text="Register" link="/register" />
+        <div id="actions">
+            <TopbarButton text="Actions" link="/action" />
+        </div>
+        <div id="import">
+            <TopbarButton text="Import" link="/import" />
         </div>
     </div>
 </nav>
@@ -25,12 +28,9 @@
 <style>
     nav {
         display: grid;
-        width: 100%;
         background-color: var(--accent0);
         background-color: var(--accent1);
         background: linear-gradient(135deg, var(--accent0), 60%, #1e1e64);
-
-        border-right: 3px solid #ffffffbb;
     }
 
     #logo_container {
@@ -40,21 +40,23 @@
         margin-top: 4px;
 
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 10px;
         grid-auto-rows: minmax(50px, auto);
-        width: 100%;
     }
     #logo {
+        grid-column: 1;
+    }
+    #graphs {
+        grid-column: 4;
+    }
+    #categories {
+        grid-column: 5;
+    }
+    #actions {
         grid-column: 6;
     }
-    #about {
-        grid-column: 9;
-    }
-    #login {
-        grid-column: 10;
-    }
-    #register {
-        grid-column: 11;
+    #import {
+        grid-column: 7;
     }
 </style>

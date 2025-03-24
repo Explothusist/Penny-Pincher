@@ -82,6 +82,7 @@
         /* margin-left: 10%; */
         margin: 5%;
         width: 90%;
+        margin-top: 0%;
         
         /* background-color: white;
         justify-self: center;

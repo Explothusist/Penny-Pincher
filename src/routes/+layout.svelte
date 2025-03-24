@@ -2,6 +2,7 @@
 
     import Logo from "$lib/components/Logo.svelte";
     import Abe from "$lib/components/Abe.svelte"
+    import Topbar from "$lib/components/Topbar.svelte";
 
     function openai() {
         
@@ -15,7 +16,7 @@
 <page>
     <content>
         <div id="topbar">
-            <Logo />
+            <Topbar />
         </div>
         <slot />
         
@@ -33,10 +34,8 @@
 
 <style> 
     #topbar {
-        width: 98%;
         display: flex;
         justify-content: left;
-        margin-left: 2%;
     }
     
     :global(:root) {
