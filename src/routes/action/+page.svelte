@@ -34,6 +34,22 @@
         // console.log(id);
     }
 
+    function commatizeNumber(n: number): string {
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    let reportElement;
+
+    function redGreenLerp(scalar: number, value: number) {
+        const h = scalar * 135;
+        return `hsl(${h}, 100%, ${value * 50}%)`;
+    }
+    
+    function toCleanStamp(time: number): string {
+        const parts = new Date(time * 1000).toDateString().split(" ").slice(1, 4);
+        return `${parts[0]} ${parts[1]}, ${parts[2]}`;
+    
+}
     onMount(() => {
         if(data.message){
             alert(data.message);
@@ -103,14 +119,54 @@
     </form>
     <content>
         {#if data.preview}
-            {#each data.objects as object}
-                {#if object.isIncome}
-                    <Income income={object} category={get_category(object.category)} show_edit_delete={false} />
-                {:else}
-                    <Expense expense={object} category={get_category(object.category)} show_edit_delete={false} />
+            <report bind:this={reportElement} >
+                <!-- class:mono={monochrome} -->
+                <top-bar>
+                    <Logo />
+                    <info>
+                        Report generated
+                        <b>{toCleanStamp(Date.now())}</b>
+                        <!-- by <b>{data.user.firstName} {data.user.lastName}</b>. -->
+                    </info>
+                </top-bar>
+                <hr>
+                <r-content>
+                    <h2>Transactions</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                            <th scope="col">Category ID</th>
+                            <th scope="col">Category Name</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each data.objects as transaction}
+                                {#if transaction.id !== -1}
+                                    <tr>
+                                        <td style="text-align: center;">{transaction.category}</td>
+                                        <td style="text-align: center;">{get_category(transaction.category).name}</td>
+                                        <td class="money" style="color:{redGreenLerp(transaction.isIncome, 0.65)}">
+                                            <!-- ${commatizeNumber(transaction.amountUsd)}  -->
+                                            {commatizeNumber(transaction.amountUsd * ((transaction.isIncome ? 1 : -1)))}
+                                        </td>
+                                        <td>{toCleanStamp(transaction.date)}</td>
+                                    </tr>
+                                {/if}
+                            {/each}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th scope="row" colspan="2">Aggregate Change</th>
+                                <td class="money" style="font-weight:bold;color:{redGreenLerp(data.objects.map((x) => x.amountUsd).reduce((a, b) => a + b, 0) > 0, 0.65)}">${commatizeNumber(data.objects.map((x) => x.amountUsd).reduce((a, b) => a + b, 0))}</td>
+                                <td>{toCleanStamp(Date.now())}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </r-content>
+            </report>
                 {/if}
-            {/each}
-        {/if}
     </content>
 </div>
 
@@ -189,5 +245,196 @@
     faint {
         opacity: 0.7;
         font-size: 16px;
+    }
+
+    split {
+        display: flex;
+        width: calc(100% - 32px);
+        height: 100%;
+        font-family: sans-serif;
+        gap: 12px;
+
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    report {
+        flex-grow: 1;
+        background-color: white;
+        overflow-y: auto;
+    }
+
+    :global(report logo-container) {
+        display: inline-flex !important;
+        margin-left: 0px !important;
+    }
+
+    :global(report logo-container h1) {
+        color: #660077;
+        margin: 0px;
+    }
+
+    config {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 400px;
+        border: 2px solid gray;
+        border-radius: 8px;
+        background-color: #00000022;
+        margin-top: 6px;
+        margin-bottom: 6px;
+    }
+
+    config-options {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px;
+        flex-grow: 1;
+    }
+
+    config-options hr {
+        width: 95%;
+    }
+
+    sect {
+        display: block;
+        font-weight: bold;
+        text-align: center;
+        font-size: 1.2em;
+    }
+
+
+    row {
+        user-select: none;
+        width: 95%;
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-bottom: 4px;
+        background-color: transparent;
+        transition: background-color 200ms;
+        padding: 4px;
+        border-radius: 4px;
+    }
+
+    row:hover {
+        background-color: #00000022;
+    }
+
+    row label {
+        flex-grow: 1;
+    }
+
+    print-button {
+        color: white;
+        background-color: var(--grape-green);
+        width: calc(100% - 24px);
+        height: 128px;
+        margin: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+    
+        transition: filter 100ms, background-color 100ms;
+    }
+
+    print-button:hover {
+        filter: drop-shadow(0 0 2px black);
+        background-color: #279727;
+    }
+
+    box-label {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+
+        background-color: #00000022;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+    }
+
+    report hr {
+        margin: 10px 6px;
+        border-color: #000000aa;
+    }
+
+
+    @media print {
+        :global(body *:not(.printable-ancestor, .printable *)) {
+            display: none !important;
+        }
+    }
+
+    r-content {
+        display: block;
+        margin: 12px;
+    }
+
+    r-content h2 {
+        margin: 0px;
+        margin-bottom: 18px;
+    }
+
+    c-cont {
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        margin: 12px;
+    }
+
+    table {
+        border-collapse:collapse;
+        background-color: #00000022;
+        border-spacing: 50px 0;
+        padding-left: 8px;
+        padding-right: 8px;
+        width: 100%;
+    }
+
+    thead {
+        border-bottom: 1px solid black;
+    }
+
+    tfoot {
+        border-top: 1px solid black;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #00000033;
+    }
+
+    td, th {
+        padding-left: 4px;
+        padding-right: 20px;
+        text-align: center;
+    }
+
+    .money {
+        color: green;
+        font-weight: bold;
+        text-align: center;
+        -webkit-text-stroke: 0.2px black;
+    }
+
+    .mono {
+        filter: grayscale(1.0);
+    }
+
+    .faint {
+        opacity: 0.5;
     }
 </style>
