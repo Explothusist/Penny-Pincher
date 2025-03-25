@@ -59,7 +59,7 @@ export function load(  { cookies, url }) {
 
     const currBalance = Balance.current().toJSON();
 
-    console.log(recentOccurance);
+    // console.log(recentOccurance);
 
     return {
         recentOccurance: recentOccurance,

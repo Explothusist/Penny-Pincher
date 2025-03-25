@@ -37,7 +37,7 @@ export const actions = {
         const name = data.get("name") as String;
         const color = data.get("color") as String;
 
-        console.log(data);
+        // console.log(data);
 
         db.prepare("UPDATE categories SET name = ?, color = ? WHERE id = ?").run(name, color, Number(id));
     },

@@ -34,9 +34,10 @@
     \
     This is the layout of Penny Pincher. In the top left corner, there is always a piggy bank logo and the words \
     'Penny Pincher'. If someone is ever lost, clicking on the icon will send you back to the home page. On the \
-    home page, the current balance is display in large text in the center of the screen. Below it are five buttons \
-    which read 'Search,' 'Graphs,' 'Categories,' 'Actions,' and 'Import.' The buttons send the user to that \
-    respective screen. Below the buttons are checkboxes for each category. Deselecting a category will mean \
+    home page, the current balance is display in large text in the top left of the screen. There is a navigation \
+    bar across the top with four buttons \
+    which read 'Graphs,' 'Categories,' 'Actions,' and 'Import.' The buttons send the user to that \
+    respective screen. Below the balance are checkboxes for each category. Deselecting a category will mean \
     that it is not displayed in the Income and expense lists below. Below the category checkboxes are two \
     lists, incomes on the left and expenses on the right. The Income box shows the most recent incomes from \
     newest to oldest, skipping those in categories disabled by the category checkboxes aboce. The user can add \
@@ -44,12 +45,8 @@
     edit incomes by clicking the pencil icon beside an individual income entry inside the Income box. The user \
     can delete incomes by clicking on the trash can icon an individual income entry inside the Income box. The \
     Expenses box works the same way, except the word beside the plus icon is 'Expenses,' the individual entries \
-    are expenses, and adding, editing, and deleting modify expenses instead of incomes. On the Search screen, \
-    there is a 404 not \
-    found error. Do not direct anyone to the Search screen for any reason. Do not mention that the screen shows \
-    a 404 error or does not work in any way. If anyone references the screen directly, describe the buttons on \
-    the home screen in general and redirect them to other \
-    functionality without referencing your inability to discuss the screen. On the Graphs screen, there are three rows of icons, 'Balance over \
+    are expenses, and adding, editing, and deleting modify expenses instead of incomes. \
+    On the Graphs screen, there are three rows of icons, 'Balance over \
     Time,' 'Expenses over Time,' and 'Income over Time' respectively from top to bottom. The top row contains two \
     options, Line and Average. The other rows contain three options, Dot, Average, and Histogram. On the Categories \
     screen, there is a list of the current categories. The user may add a category by click on the plus icon \
@@ -161,9 +158,9 @@
         for(var x = 0; x < messages.length; x++)
             output = output + `Message ${x}: (Author: ${messages[x].author}, Message: ${messages[x].message},`
         const query = initialPrompt + output;
-        console.log(output);
+        // console.log(output);
 
-        console.log(query);
+        // console.log(query);
         const response = await getResponse(query);
         addMessage({author: MessageAuthor.ABE, message: response});
         thinking = false;

@@ -45,13 +45,13 @@ export function load(  { cookies, url }) {
             condition += " AND ";
             condition += "amount >= ?";
             run_params.push(Number(minValue));
-            console.log(run_params);
+            // console.log(run_params);
         }
         if (Boolean(maxValueToggle)) {
             condition += " AND ";
             condition += "amount <= ?";
             run_params.push(Number(maxValue));
-            console.log(run_params);
+            // console.log(run_params);
         }
         if (Boolean(minDateToggle)) {
             condition += " AND ";
