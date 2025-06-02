@@ -1,12 +1,14 @@
 <script lang="ts">
 
-    import Logo from "$lib/components/Logo.svelte";
     import Abe from "$lib/components/Abe.svelte"
     import Topbar from "$lib/components/Topbar.svelte";
+    import { onMount } from "svelte";
+    import { registerHeatmapHooks } from "$lib/heatmap-telemetry";
 
-    function openai() {
-        
-    }
+    onMount(() => {
+        registerHeatmapHooks();
+    });
+
 </script>
 
 <svelte:head>
