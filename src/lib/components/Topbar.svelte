@@ -16,6 +16,9 @@
         <div id="categories">
             <TopbarButton text="Categories" link="/categories" />
         </div>
+        <div id="search">
+            <TopbarButton text="Search" link="/search" />
+        </div>
         <div id="actions">
             <TopbarButton text="Actions" link="/action" />
         </div>
@@ -40,7 +43,7 @@
         margin-top: 4px;
 
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 10px;
         grid-auto-rows: minmax(50px, auto);
     }
@@ -53,10 +56,13 @@
     #categories {
         grid-column: 5;
     }
-    #actions {
+    #search {
         grid-column: 6;
     }
-    #import {
+    #actions {
         grid-column: 7;
+    }
+    #import {
+        grid-column: 8;
     }
 </style>
