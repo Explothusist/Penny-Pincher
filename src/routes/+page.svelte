@@ -15,6 +15,12 @@
 
     // console.log(data);
 
+    const Jan_1_1900 = "1900-01-01"; // Oldest person to ever live lived 122 years, then round to a convenient date
+    const Now = new Date();
+    const Now_Formatted = Now.getFullYear()+"-"+String(Now.getMonth()+1).padStart(2, "0")+"-"+String(Now.getDate()).padStart(2, "0");
+    const Zero = 0;
+    const Total_USD_In_Circulation = 2391000000000; // As of 6/3/2025
+
     function getIncomeByID(id: number) {
         return data.recentIncome.map((income) => income.id).indexOf(id);
     };
@@ -231,7 +237,7 @@
                 {#each toggled_income as income}
                     <Income {income} category={get_category(income.category)} onClickDelete={deleteIncomeClickRaise} onClickEdit={editIncomeClickRaise} />
                 {/each}
-                <ShowMoreButton link={"/?income="+(data.income_loaded+50)} />
+                <ShowMoreButton link={"/?income="+(data.income_loaded+50)+"&&expense="+(data.expense_loaded)} />
             </box-content>
         </labeled-box>
 
@@ -241,7 +247,7 @@
                 {#each toggled_expense as expense}
                     <Expense {expense} category={get_category(expense.category)} onClickDelete={deleteExpenseClickRaise} onClickEdit={editExpenseClickRaise} />
                 {/each}
-                <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)} />
+                <ShowMoreButton link={"/?expense="+(data.expense_loaded+50)+"&&income="+(data.income_loaded)} />
             </box-content>
         </labeled-box>
     </boxes>
@@ -257,11 +263,11 @@
                 <input form="addIncome" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <block-cont>
                     <faint>Amount:</faint>
-                    <input form="addIncome" name="amount" type="number" placeholder="Amount" >
+                    <input form="addIncome" name="amount" type="number" min={Zero} max={Total_USD_In_Circulation} placeholder="Amount" >
                 </block-cont>
                 <block-cont>
                     <faint>Date:</faint>
-                    <input form="addIncome" name="date" type="date" value={new Date(Date.now()).toISOString().slice(0, 10)} >
+                    <input form="addIncome" name="date" type="date" min={Jan_1_1900} max={Now_Formatted} value={new Date(Date.now()).toISOString().slice(0, 10)} >
                 </block-cont>
                 <block-cont>
                     <faint>Category:</faint>
@@ -300,11 +306,11 @@
 
                 <block-cont>
                     <faint>Amount:</faint>
-                    <input form="editIncome" name="amount" type="number" value={data.recentIncome[getIncomeByID(editIncomeID)].amountUsd} >
+                    <input form="editIncome" name="amount" type="number" min={Zero} max={Total_USD_In_Circulation} value={data.recentIncome[getIncomeByID(editIncomeID)].amountUsd} >
                 </block-cont>
                 <block-cont>
                     <faint>Date:</faint>
-                    <input form="editIncome" name="date" type="date" value={new Date(data.recentIncome[getIncomeByID(editIncomeID)].date * 1000).toISOString().slice(0, 10)} >
+                    <input form="editIncome" name="date" type="date" min={Jan_1_1900} max={Now_Formatted} value={new Date(data.recentIncome[getIncomeByID(editIncomeID)].date * 1000).toISOString().slice(0, 10)} >
                 </block-cont>
                 <block-cont>
                     <faint>Category:</faint>
@@ -364,11 +370,11 @@
                 <input form="addExpense" name="former_balance" type="number" value={data.currentBalance.amountUsd} hidden>
                 <block-cont>
                     <faint>Amount:</faint>
-                    <input form="addExpense" name="amount" type="number" placeholder="Amount" >
+                    <input form="addExpense" name="amount" type="number" min={Zero} max={Total_USD_In_Circulation} placeholder="Amount" >
                 </block-cont>
                 <block-cont>
                     <faint>Date:</faint>
-                    <input form="addExpense" name="date" type="date" value={new Date(Date.now()).toISOString().slice(0, 10)} >
+                    <input form="addExpense" name="date" type="date" min={Jan_1_1900} max={Now_Formatted} value={new Date(Date.now()).toISOString().slice(0, 10)} >
                 </block-cont>
                 <block-cont>
                     <faint>Category:</faint>
@@ -407,11 +413,11 @@
 
                 <block-cont>
                     <faint>Amount:</faint>
-                    <input form="editExpense" name="amount" type="number" value={data.recentExpense[getExpenseByID(editExpenseID)].amountUsd} >
+                    <input form="editExpense" name="amount" type="number" min={Zero} max={Total_USD_In_Circulation} value={data.recentExpense[getExpenseByID(editExpenseID)].amountUsd} >
                 </block-cont>
                 <block-cont>
                     <faint>Date:</faint>
-                    <input form="editExpense" name="date" type="date" value={new Date(data.recentExpense[getExpenseByID(editExpenseID)].date * 1000).toISOString().slice(0, 10)} >
+                    <input form="editExpense" name="date" type="date" min={Jan_1_1900} max={Now_Formatted} value={new Date(data.recentExpense[getExpenseByID(editExpenseID)].date * 1000).toISOString().slice(0, 10)} >
                 </block-cont>
                 <block-cont>
                     <faint>Category:</faint>
