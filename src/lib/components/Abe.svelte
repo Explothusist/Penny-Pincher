@@ -18,6 +18,7 @@
     let msgCont: HTMLDivElement;
     let shown = false;
     let thinking = false;
+    let chattedYet = false;
     $: if (inputBox) inputBox.disabled = thinking;
 
     let messages: ChatMessage[] = [
@@ -29,8 +30,9 @@
         send();
     }
     
-    function addMessage(message: ChatMessage) {
+    async function addMessage(message: ChatMessage) {
         messages = [...messages, message];
+
         setTimeout(function() {
             // Probably Firefox exclusive hack because their event system is somewhat
             // scuffed but WHATEVER!
@@ -41,6 +43,22 @@
             if (!lastEl) return;
             lastEl.scrollIntoView()
         }, 100);
+
+
+        const data: any = {...message};
+
+        if (!chattedYet) {
+            data.newSession = true;
+            chattedYet = true;
+        }
+
+        const r = await fetch("/api/ai-log", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        if (!r.ok) console.error("Issue loggin");
+
     }
 
     function send() {
@@ -76,6 +94,7 @@
     async function getResponse(query: string): Promise<string> {
         const r = await fetch("/api/ai-response", {
             method: "POST",
+            headers: { "Content-Type": "text/plain" },
             body: query
         });
 

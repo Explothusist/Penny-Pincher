@@ -297,4 +297,11 @@ INSERT INTO categories VALUES(7,'Food','#cc7700');
 INSERT INTO categories VALUES(8,'Restaruants','#0000cc');
 INSERT INTO categories VALUES(9,'Personal','#77cc00');
 
+CREATE TABLE abe_messages(
+    session_id INTEGER NOT NULL,
+    -- FUTURE: Enum instead of text
+    author TEXT NOT NULL,
+    message TEXT NOT NULL
+);
+
 COMMIT;
