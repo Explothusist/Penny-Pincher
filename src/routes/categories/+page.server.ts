@@ -1,5 +1,6 @@
 import type ShowMoreButton from '$lib/components/ShowMoreButton.svelte';
 import { Income, Expense, Balance, Category } from '$lib/db.server';
+import { error } from '@sveltejs/kit';
 import Database from 'better-sqlite3';
 const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
@@ -17,6 +18,18 @@ export function load(  { cookies, url }) {
     };
 };
 
+function check_name_length(name) {
+    const Anything_At_All = 1;
+    const Longest_Word_Rounded = 50; // Longest word in most English dictionaries is 45 rounded
+
+    if (name < Anything_At_All) {
+        return false;
+    }else if (name > Longest_Word_Rounded) {
+        return false;
+    }
+    return true;
+};
+
 export const actions = {
 
     addCategory: async ({ cookies, request, url }) =>{
@@ -26,7 +39,12 @@ export const actions = {
         const name = data.get("name") as String;
         const color = data.get("color") as String;
 
-        db.prepare("INSERT INTO categories (name, color) VALUES (?, ?)").run(name, color);
+        let valid = check_name_length(name);
+        if (valid) {
+            db.prepare("INSERT INTO categories (name, color) VALUES (?, ?)").run(name, color);
+        }else {
+            error(400, "Request Could Not Be Processed: Inputs Out of Valid Range");
+        }
     },
 
     editCategory: async ({ cookies, request, url }) =>{
@@ -39,7 +57,12 @@ export const actions = {
 
         // console.log(data);
 
-        db.prepare("UPDATE categories SET name = ?, color = ? WHERE id = ?").run(name, color, Number(id));
+        let valid = check_name_length(name);
+        if (valid) {
+            db.prepare("UPDATE categories SET name = ?, color = ? WHERE id = ?").run(name, color, Number(id));
+        }else {
+            error(400, "Request Could Not Be Processed: Inputs Out of Valid Range");
+        }
     },
 
     deleteCategory: async ({ cookies, request, url }) =>{

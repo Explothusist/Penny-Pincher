@@ -1,5 +1,6 @@
 import type ShowMoreButton from '$lib/components/ShowMoreButton.svelte';
 import { Income, Expense, Balance, Category } from '$lib/db.server';
+import { error, redirect } from '@sveltejs/kit';
 import Database from 'better-sqlite3';
 const db = new Database("db/main.db", {});
 db.pragma("journal_mode = WAL");
@@ -47,9 +48,35 @@ export function load(  { cookies, url }) {
     };
 };
 
+function check_date_and_amount(date: number, amount: number) {
+    const half_a_day = 43200;
+    const Jan_1_1900 = -2208967200; // Oldest person to ever live lived 122 years, then round to a convenient date
+    const Now = Math.round(Date.now()/1000)+half_a_day;
+    const Zero = 0;
+    const Total_USD_In_Circulation = 2391000000000; // As of 6/3/2025
+
+    if (date < Jan_1_1900) {
+        return false;
+    }else if (date > Now) {
+        return false;
+    }
+    if (amount < Zero) {
+        return false;
+    }else if (amount > Total_USD_In_Circulation) {
+        return false;
+    }
+    return true;
+};
+
 export const actions = {
 
     addIncome: async ({ cookies, request, url }) =>{
+
+        const half_a_day = 43200;
+        const Jan_1_1900 = -2208967200;
+        const Now = Math.round(Date.now()/1000)+half_a_day;
+        const Zero = 0;
+        const Total_USD_In_Circulation = 2391000000000; // As of 6/3/2025
 
 		const hack = url.pathname;
         const data = await request.formData();
@@ -60,14 +87,20 @@ export const actions = {
         const former_balance = data.get("former_balance") as String;
 
         const formatted_date = new Date(String(date));
-        const half_a_day = 43200;
+        const final_date = (formatted_date.getTime()/1000)+half_a_day;
+
 
         const new_balance = (Number(former_balance)+Number(amount));
 
         // console.log(Number(former_balance)+" + "+Number(amount)+" = "+(Number(former_balance)+Number(amount)));
 
-		db.prepare("INSERT INTO income (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category));
-        db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        let valid = check_date_and_amount(final_date, Number(amount));
+        if (valid) {
+            db.prepare("INSERT INTO income (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), final_date, Number(category));
+            db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        }else {
+            error(400, "Request Could Not Be Processed: Inputs Out of Valid Range");
+        }
     },
 
     editIncome: async ({ cookies, request, url }) =>{
@@ -83,12 +116,18 @@ export const actions = {
 
         const formatted_date = new Date(String(date));
         const half_a_day = 43200;
+        const final_date = (formatted_date.getTime()/1000)+half_a_day;
         
         const new_balance = Number(former_balance)+Number(amount)-Number(old_amount);
         // console.log(Number(former_balance)+" + "+Number(amount)+" - "+Number(old_amount)+" = "+(Number(former_balance)+Number(amount)-Number(old_amount)));
 
-		db.prepare("UPDATE income SET amount = ?, date = ?, source = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category), Number(id));
-        db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        let valid = check_date_and_amount(final_date, Number(amount));
+        if (valid) {
+            db.prepare("UPDATE income SET amount = ?, date = ?, source = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category), Number(id));
+            db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        }else {
+            error(400, "Request Could Not Be Processed: Inputs Out of Valid Range");
+        }
     },
 
     deleteIncome: async ({ cookies, request, url }) =>{
@@ -118,11 +157,17 @@ export const actions = {
 
         const formatted_date = new Date(String(date));
         const half_a_day = 43200;
+        const final_date = (formatted_date.getTime()/1000)+half_a_day;
         
         const new_balance = Number(former_balance)-Number(amount);
 
-		db.prepare("INSERT INTO expense (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category));
-        db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        let valid = check_date_and_amount(final_date, Number(amount));
+        if (valid) {
+            db.prepare("INSERT INTO expense (amount, date, source) VALUES (?, ?, ?)").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category));
+            db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        }else {
+            error(400, "Request Could Not Be Processed: Inputs Out of Valid Range");
+        }
     },
 
     editExpense: async ({ cookies, request, url }) =>{
@@ -138,11 +183,17 @@ export const actions = {
 
         const formatted_date = new Date(String(date));
         const half_a_day = 43200;
+        const final_date = (formatted_date.getTime()/1000)+half_a_day;
         
         const new_balance = Number(former_balance)-Number(amount)+Number(old_amount);
 
-		db.prepare("UPDATE expense SET amount = ?, date = ?, source = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category), Number(id));
-        db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        let valid = check_date_and_amount(final_date, Number(amount));
+        if (valid) {
+            db.prepare("UPDATE expense SET amount = ?, date = ?, source = ? WHERE id = ?").run(Number(amount), (formatted_date.getTime()/1000)+half_a_day, Number(category), Number(id));
+            db.prepare("UPDATE balance SET amount = ? WHERE id = ?").run(new_balance, 1);
+        }else {
+            error(400, "Request Could Not Be Processed: Inputs Out of Valid Range");
+        }
     },
 
     deleteExpense: async ({ cookies, request, url }) =>{

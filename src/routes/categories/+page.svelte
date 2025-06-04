@@ -6,6 +6,9 @@
     import CategoryTitleBar from "$lib/components/CategoryTitleBar.svelte";
     
     export let form, data;
+    
+    const Anything_At_All = 1;
+    const Longest_Word_Rounded = 50;
 
     function getCategoryByID(id: number) {
         return data.categories.map((category) => category.id).indexOf(id);
@@ -84,7 +87,7 @@
             <content>
                 <block-cont>
                     <faint>Name:</faint>
-                    <input form="addCategory" name="name" placeholder="Name" >
+                    <input form="addCategory" name="name" minlength={Anything_At_All} maxlength={Longest_Word_Rounded} placeholder="Name" >
                 </block-cont>
                 <block-cont>
                     <faint>Color:</faint>
@@ -126,7 +129,7 @@
 
                 <block-cont>
                     <faint>Name:</faint>
-                    <input form="editCategory" name="name" placeholder="Name" value={data.categories[getCategoryByID(editCategoryID)].name} >
+                    <input form="editCategory" name="name" minlength={Anything_At_All} maxlength={Longest_Word_Rounded} placeholder="Name" value={data.categories[getCategoryByID(editCategoryID)].name} >
                 </block-cont>
                 <block-cont>
                     <faint>Color:</faint>
