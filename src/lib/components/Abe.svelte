@@ -94,6 +94,7 @@
     async function getResponse(query: string): Promise<string> {
         const r = await fetch("/api/ai-response", {
             method: "POST",
+            headers: { "Content-Type": "text/plain" },
             body: query
         });
 
