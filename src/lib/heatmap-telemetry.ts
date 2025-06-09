@@ -94,4 +94,6 @@ export function downloadHeatmapData() {
     document.body.removeChild(a);
 
     URL.revokeObjectURL(a.href);
+
+    HeatmapPoint.points = [];
 }

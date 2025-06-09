@@ -3,10 +3,11 @@
     import Abe from "$lib/components/Abe.svelte"
     import Topbar from "$lib/components/Topbar.svelte";
     import { onMount } from "svelte";
-    import { registerHeatmapHooks } from "$lib/heatmap-telemetry";
+    import { recordHeatmap, registerHeatmapHooks } from "$lib/heatmap-telemetry";
 
     onMount(() => {
         registerHeatmapHooks();
+        recordHeatmap();
     });
 
 </script>
