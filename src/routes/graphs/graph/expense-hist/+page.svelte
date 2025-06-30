@@ -75,7 +75,7 @@
 </script>
 
 <div id="mainstuff">
-    <h1>Recent Expense - Histogram</h1>
+    <h1>Recent Expense - Bar</h1>
     <chart-container>
         <canvas id="chart_canvas"></canvas>
     </chart-container>

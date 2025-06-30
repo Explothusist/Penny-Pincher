@@ -16,12 +16,17 @@
     let number_of_boxes = data.numBoxes;
     let base = minDate*1000;
     let increment = ((maxDate-minDate)/number_of_boxes) * 1000;
-    let boxes = [];
+    let boxes: {x: number, y: number, num: number}[] = [];
     for (let i = 0; i < number_of_boxes+1; i++) {
-        boxes.push({x: base + (increment * i), y: 0});
+        boxes.push({x: base + (increment * i), y: 0, num: 0});
     }
 
-    data.recentIncome.forEach((income) => boxes[Math.floor(((income.date*1000)-base)/increment)].y += income.amountUsd);
+    data.recentIncome.forEach((income) => {
+        boxes[Math.floor(((income.date*1000)-base)/increment)].y += income.amountUsd;
+        boxes[Math.floor(((income.date*1000)-base)/increment)].num += 1;
+    });
+
+    boxes = boxes.map((box) => { return { x: box.x, y: box.y/box.num, num: box.num } });
 
     let old_boxes = [...boxes];
     // Average over last four intervals

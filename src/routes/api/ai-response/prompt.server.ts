@@ -25,7 +25,7 @@ Expenses box works the same way, except the word beside the plus icon is 'Expens
 are expenses, and adding, editing, and deleting modify expenses instead of incomes. 
 On the Graphs screen, there are three rows of icons, 'Balance over 
 Time,' 'Expenses over Time,' and 'Income over Time' respectively from top to bottom. The top row contains two 
-options, Line and Average. The other rows contain three options, Dot, Average, and Histogram. On the Categories 
+options, Line and Average. The other rows contain three options, Dot, Average, and Bar. On the Categories 
 screen, there is a list of the current categories. The user may add a category by click on the plus icon 
 in the top by the word 'Categories.' The user may edit an existing category by clicking on the pencil icon 
 by an individual category. The user may delete a category by clicking on the trash icon by and individual 

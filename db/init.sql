@@ -318,7 +318,7 @@ INSERT INTO categories VALUES(4,'Insurance','#cccc00');
 INSERT INTO categories VALUES(5,'Bills','#77cc77');
 INSERT INTO categories VALUES(6,'Repairs','#000000');
 INSERT INTO categories VALUES(7,'Food','#cc7700');
-INSERT INTO categories VALUES(8,'Restaruants','#0000cc');
+INSERT INTO categories VALUES(8,'Restaurants','#0000cc');
 INSERT INTO categories VALUES(9,'Personal','#77cc00');
 
 CREATE TABLE abe_messages(
