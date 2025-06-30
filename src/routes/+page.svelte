@@ -156,10 +156,14 @@
     let increment = ((maxDate-minDate)/number_of_boxes) * 1000;
     let boxes = [];
     for (let i = 0; i < number_of_boxes; i++) {
-        boxes.push({x: base + (increment * i), y: 0});
+        boxes.push({x: base + (increment * i), y: 0, num: 0});
     }
 
-    data_points.forEach((point) => boxes[Math.floor(((point.x)-base)/increment)].y += point.y);
+    data_points.forEach((point) => { 
+        boxes[Math.floor(((point.x)-base)/increment)].y += point.y;
+        boxes[Math.floor(((point.x)-base)/increment)].num += 1;
+    });
+    boxes.map((box) => { return { x: box.x, y: box.y/box.num }; });
 
     onMount(() => {
         document.body.appendChild(addIncomeModalBind);
