@@ -4,6 +4,7 @@
     import Logo from "$lib/components/Logo.svelte";
     import { onMount } from "svelte";
     import type { Income } from '$lib/db.server.js';
+    import { commatizeNumber, tooltipPlugin } from '$lib/util.js';
     export let form, data;
     
     let minDate = data.minDate;
@@ -51,7 +52,8 @@
                         plugins: {
                             legend: {
                                 display: false
-                            }
+                            },
+                            tooltip: tooltipPlugin,
                         },
                         scales: {
                             x: (data.dateToggle) ?
@@ -64,7 +66,10 @@
                                 type: "time"
                             },
                             y: {
-                                min: 0
+                                min: 0,
+                                ticks: {
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                }
                             }
                         }
                     }

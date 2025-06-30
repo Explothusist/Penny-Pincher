@@ -10,6 +10,7 @@
     import CategoryCheckbox from "$lib/components/CategoryCheckbox.svelte";
     import Chart from 'chart.js/auto';
     import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
+    import { commatizeNumber, tooltipPlugin } from "$lib/util.js";
     
     export let form, data;
 
@@ -197,16 +198,19 @@
                         plugins: {
                             legend: {
                                 display: false
-                            }
+                            },
+                            tooltip: tooltipPlugin,
                         },
                         scales: {
                             x: {
                                 type: "time",
                                 min: data.minDate*1000 - increment/2,
-                                max: data.maxDate*1000 - increment/2
+                                max: data.maxDate*1000 - increment/2,
                             },
                             y: {
-                                
+                                ticks: {
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                }
                             }
                         }
                     }

@@ -4,6 +4,7 @@
     import Logo from "$lib/components/Logo.svelte";
     import { onMount } from "svelte";
     import type { Expense } from '$lib/db.server.js';
+    import { commatizeNumber, tooltipPlugin } from '$lib/util.js';
     export let form, data;
 
     let calc_balance = data.currBalance.amountUsd;
@@ -63,7 +64,8 @@
                         plugins: {
                             legend: {
                                 display: false
-                            }
+                            },
+                            tooltip: tooltipPlugin,
                         },
                         scales: {
                             x: (data.dateToggle) ?
@@ -76,7 +78,9 @@
                                 type: "time"
                             },
                             y: {
-                                
+                                ticks: {
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                }
                             }
                         }
                     }
