@@ -1,4 +1,4 @@
-# PennyPincher
+# <img src="./static/logo.png" width="40" alt="PennyPincher Logo"> PennyPincher
 
 PennyPincher is a comprehensive budgeting application designed to help you manage your finances with ease. Track your income and expenses, visualize your spending habits with insightful graphs, and organize your transactions with customizable categories. PennyPincher empowers you to take control of your financial life and make informed decisions about your money.
 
