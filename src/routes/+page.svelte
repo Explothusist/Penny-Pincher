@@ -47,6 +47,13 @@
     let deleteExpenseModalHidden = true;
     let deleteExpenseID = data.recentExpense[0].id;
     
+    let tutorialModalBind: HTMLElement;
+    let tutorialModalHidden = false;
+    let tutorial2ModalBind: HTMLElement;
+    let tutorial2ModalHidden = true;
+    let tutorial3ModalBind: HTMLElement;
+    let tutorial3ModalHidden = true;
+    
     function addIncomeClickRaise() {
         addIncomeModalHidden = false;
     };
@@ -93,6 +100,28 @@
     function deleteExpenseClickDismiss(event: PointerEvent) {
         if (event.target !== deleteExpenseModalBind) return;
         deleteExpenseModalHidden = true;
+    };
+    
+    function tutorialClickRaise() {
+        tutorialModalHidden = false;
+    };
+    function tutorialClickDismiss(event: PointerEvent) {
+        if (event.target !== tutorialModalBind) return;
+        tutorialModalHidden = true;
+    };
+    function tutorial2ClickRaise() {
+        tutorial2ModalHidden = false;
+    };
+    function tutorial2ClickDismiss(event: PointerEvent) {
+        if (event.target !== tutorial2ModalBind) return;
+        tutorial2ModalHidden = true;
+    };
+    function tutorial3ClickRaise() {
+        tutorial3ModalHidden = false;
+    };
+    function tutorial3ClickDismiss(event: PointerEvent) {
+        if (event.target !== tutorial3ModalBind) return;
+        tutorial3ModalHidden = true;
     };
     
     data.recentIncome.sort((a, b) => b.date-a.date);
@@ -173,6 +202,9 @@
         document.body.appendChild(addExpenseModalBind);
         document.body.appendChild(editExpenseModalBind);
         document.body.appendChild(deleteExpenseModalBind);
+        document.body.appendChild(tutorialModalBind);
+        document.body.appendChild(tutorial2ModalBind);
+        document.body.appendChild(tutorial3ModalBind);
         if (data.message) {
             alert(data.message);
         }(async function() {
@@ -476,6 +508,53 @@
 </modal>
 
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={tutorialModalBind} class:hidden={tutorialModalHidden} on:click={tutorialClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Tutorial</modal-label>
+            <content>
+                <h2>Welcome to Penny Pincher!</h2>
+                <h3 class="tutorial">To begin navigating through the application, use the topbar.<br>Clicking on the Penny Pincher logo will return you to the home page.</h3>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <big-button on:click={() => { tutorialModalHidden=true; tutorial2ClickRaise(); }}>Continue</big-button>
+            <big-button on:click={() => tutorialModalHidden=true}>Skip</big-button>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={tutorial2ModalBind} class:hidden={tutorial2ModalHidden} on:click={tutorial2ClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Tutorial</modal-label>
+            <content>
+                <h3 class="tutorial">Lists of incomes and expenses are shown below.<br>Plus icon: Create Transaction<br>Pencil icon: Edit Existing Transaction<br>Trash icon: Delete Existing Transaction</h3>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <big-button on:click={() => { tutorial2ModalHidden=true; tutorial3ClickRaise(); }}>Continue</big-button>
+            <big-button on:click={() => tutorial2ModalHidden=true}>Skip</big-button>
+    </editor>
+</modal>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<modal bind:this={tutorial3ModalBind} class:hidden={tutorial3ModalHidden} on:click={tutorial3ClickDismiss}>
+    <editor class="confirm_modal">
+        <modal-label>Tutorial</modal-label>
+            <content>
+                <h3 class="tutorial">To track transactions over time, use the graphs page.<br>There are three types of graphs: Balance, Income, and Expense.<br>Each type can be has Dot, Line, and Bar versions.</h3>
+            </content>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <big-button on:click={() => tutorial3ModalHidden=true}>Continue</big-button>
+            <big-button on:click={() => tutorial3ModalHidden=true}>Skip</big-button>
+    </editor>
+</modal>
+
+
 <style>
 
     #mainstuff {
@@ -743,5 +822,9 @@
     editor > form {
         display: flex;
         flex-direction: column;
+    }
+
+    .tutorial {
+        font-weight: normal;
     }
 </style>
