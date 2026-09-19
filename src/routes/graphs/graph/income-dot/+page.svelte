@@ -8,9 +8,9 @@
     export let form, data;
 
     onMount(() => {
-        if(data.message){
-            alert(data.message);
-        }
+        // if(data.message){
+        //     alert(data.message);
+        // }
         
         (async function() {
             const xyValues = data.recentIncome.map((function(income: Income) { return{x: income.date*1000, y: income.amountUsd}; }));
@@ -46,7 +46,7 @@
                             y: {
                                 min: 0,
                                 ticks: {
-                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v as number),
                                 }
                             }
                         }

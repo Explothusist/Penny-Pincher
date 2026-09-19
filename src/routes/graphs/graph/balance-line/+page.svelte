@@ -24,9 +24,9 @@
     // console.log(data_points);
 
     onMount(() => {
-        if(data.message){
-            alert(data.message);
-        }
+        // if(data.message){
+        //     alert(data.message);
+        // }
         
         (async function() {
             const xyValues = data_points;
@@ -61,7 +61,7 @@
                             },
                             y: {
                                 ticks: {
-                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v as number),
                                 }
                             }
                         }

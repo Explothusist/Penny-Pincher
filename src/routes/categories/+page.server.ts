@@ -18,13 +18,13 @@ export function load(  { cookies, url }) {
     };
 };
 
-function check_name_length(name) {
+function check_name_length(name: string) {
     const Anything_At_All = 1;
     const Longest_Word_Rounded = 50; // Longest word in most English dictionaries is 45 rounded
 
-    if (name < Anything_At_All) {
+    if (name.length < Anything_At_All) {
         return false;
-    }else if (name > Longest_Word_Rounded) {
+    }else if (name.length > Longest_Word_Rounded) {
         return false;
     }
     return true;
@@ -36,8 +36,8 @@ export const actions = {
 
         const hack = url.pathname;
         const data = await request.formData();
-        const name = data.get("name") as String;
-        const color = data.get("color") as String;
+        const name = data.get("name") as string;
+        const color = data.get("color") as string;
 
         let valid = check_name_length(name);
         if (valid) {
@@ -51,9 +51,9 @@ export const actions = {
 
         const hack = url.pathname;
         const data = await request.formData();
-        const id = data.get("id") as String;
-        const name = data.get("name") as String;
-        const color = data.get("color") as String;
+        const id = data.get("id") as string;
+        const name = data.get("name") as string;
+        const color = data.get("color") as string;
 
         // console.log(data);
 
@@ -69,8 +69,8 @@ export const actions = {
 
         const hack = url.pathname;
         const data = await request.formData();
-        const id = data.get("id") as String;
-        const cleanup = data.get("cleanup") as String;
+        const id = data.get("id") as string;
+        const cleanup = data.get("cleanup") as string;
 
         if (Number(cleanup) === -1) {
             let curr_balance = Balance.current();

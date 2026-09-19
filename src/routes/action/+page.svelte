@@ -32,6 +32,7 @@
             }
         }
         // console.log(id);
+        return data.categories[0];
     }
 
     function commatizeNumber(n: number): string {
@@ -50,11 +51,11 @@
         return `${parts[0]} ${parts[1]}, ${parts[2]}`;
     
 }
-    onMount(() => {
-        if(data.message){
-            alert(data.message);
-        }
-    });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
+    // onMount(() => {
+    //     if(data.message){
+    //         alert(data.message);
+    //     }
+    // });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
 <div id="mainstuff">
@@ -147,7 +148,7 @@
                                     <tr>
                                         <td style="text-align: center;">{transaction.category}</td>
                                         <td style="text-align: center;">{get_category(transaction.category).name}</td>
-                                        <td class="money" style="color:{redGreenLerp(transaction.isIncome, 0.65)}">
+                                        <td class="money" style="color:{redGreenLerp(Number(transaction.isIncome), 0.65)}">
                                             <!-- ${commatizeNumber(transaction.amountUsd)}  -->
                                             {commatizeNumber(transaction.amountUsd * ((transaction.isIncome ? 1 : -1)))}
                                         </td>
@@ -159,7 +160,7 @@
                         <tfoot>
                             <tr>
                                 <th scope="row" colspan="2">Aggregate Change</th>
-                                <td class="money" style="font-weight:bold;color:{redGreenLerp(data.objects.map((x) => x.amountUsd).reduce((a, b) => a + b, 0) > 0, 0.65)}">${commatizeNumber(data.objects.map((x) => x.amountUsd).reduce((a, b) => a + b, 0))}</td>
+                                <td class="money" style="font-weight:bold;color:{redGreenLerp(Number(data.objects.map((x) => x.amountUsd).reduce((a, b) => a + b, 0) > 0), 0.65)}">${commatizeNumber(data.objects.map((x) => x.amountUsd).reduce((a, b) => a + b, 0))}</td>
                                 <td>{toCleanStamp(Date.now())}</td>
                             </tr>
                         </tfoot>

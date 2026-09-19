@@ -189,9 +189,11 @@
         boxes.push({x: base + (increment * i), y: 0, num: 0});
     }
 
-    data_points.forEach((point) => { 
-        boxes[Math.floor(((point.x)-base)/increment)].y += point.y;
-        boxes[Math.floor(((point.x)-base)/increment)].num += 1;
+    data_points.forEach((point) => {
+        const rawBoxIndex = increment === 0 ? 0 : Math.floor((point.x - base) / increment);
+        const boxIndex = Math.max(0, Math.min(boxes.length - 1, rawBoxIndex));
+        boxes[boxIndex].y += point.y;
+        boxes[boxIndex].num += 1;
     });
     boxes = boxes.map((box) => { return { x: box.x, y: box.y/box.num, num: box.num }; });
 
@@ -205,9 +207,10 @@
         document.body.appendChild(tutorialModalBind);
         document.body.appendChild(tutorial2ModalBind);
         document.body.appendChild(tutorial3ModalBind);
-        if (data.message) {
-            alert(data.message);
-        }(async function() {
+        // if (data.message) {
+        //     alert(data.message);
+        // }
+        (async function() {
             const xyValues = boxes;
 
             new Chart(
@@ -241,7 +244,7 @@
                             },
                             y: {
                                 ticks: {
-                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v as number),
                                 }
                             }
                         }
@@ -727,8 +730,8 @@
         pointer-events: none;
     }
 
-    .confirm_modal {
-    }
+    /* .confirm_modal {
+    } */
 
     editor {
         background-color: white;

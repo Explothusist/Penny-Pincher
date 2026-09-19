@@ -205,7 +205,7 @@ export const actions = {
                 await writeFile("Penny_Pincher_export_"+String(new Date(Date.now()).toISOString().slice(0, 10))+".csv", csv_file, "utf-8");
                 console.log("Success");
             } catch (error) {
-                console.log("Failure: "+error.message);
+                console.log("Failure: "+(error as {message: string}).message);
             }
         }else if (Number(toDo) === -2) {
             // Print Table / Export PDF

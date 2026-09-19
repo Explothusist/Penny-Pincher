@@ -17,8 +17,8 @@
         padding: 12px;
     }
 
-    dollars {
+    /* dollars { */
         /* color: darkgreen; */
         /* font-weight: bold; */
-    }
+    /* } */
 </style>

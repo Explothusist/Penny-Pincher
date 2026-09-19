@@ -25,9 +25,9 @@
     data.recentExpense.forEach((expense) => boxes[Math.floor(((expense.date*1000)-base)/increment)].y += expense.amountUsd);
 
     onMount(() => {
-        if(data.message){
-            alert(data.message);
-        }
+        // if(data.message){
+        //     alert(data.message);
+        // }
         
         (async function() {
             const xyValues = boxes;
@@ -68,7 +68,7 @@
                             y: {
                                 min: 0,
                                 ticks: {
-                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v as number),
                                 }
                             }
                         }

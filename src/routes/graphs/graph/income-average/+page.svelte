@@ -36,9 +36,9 @@
     }
 
     onMount(() => {
-        if(data.message){
-            alert(data.message);
-        }
+        // if(data.message){
+        //     alert(data.message);
+        // }
         
         (async function() {
             const xyValues = boxes;
@@ -79,7 +79,7 @@
                             y: {
                                 min: 0,
                                 ticks: {
-                                    callback: (v, _i, _v) => "$" + commatizeNumber(v),
+                                    callback: (v, _i, _v) => "$" + commatizeNumber(v as number),
                                 }
                             }
                         }

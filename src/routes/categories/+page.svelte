@@ -65,9 +65,9 @@
         document.body.appendChild(editCategoryModalBind);
         document.body.appendChild(deleteCategoryModalBind);
         document.body.appendChild(actCategoryModalBind);
-        if(data.message){
-            alert(data.message);
-        }
+        // if(data.message){
+        //     alert(data.message);
+        // }
     });                                      //  If you can move this to a +page.ts, please do. Also, why is the syntax highlighting making it red????
 </script>
 
@@ -265,9 +265,9 @@
         font-weight: bold;
     }
 
-    modal-label.error {
+    /* modal-label.error {
 
-    }
+    } */
 
     content {
         display: block;
